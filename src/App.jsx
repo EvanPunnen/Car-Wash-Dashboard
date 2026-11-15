@@ -79,6 +79,7 @@ export default function App() {
   const [isGoogleDriveOpen, setIsGoogleDriveOpen] = useState(false);
   const [isMobileModalOpen, setIsMobileModalOpen] = useState(false);
   const [deferredInstallPrompt, setDeferredInstallPrompt] = useState(null);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   const [isSaving, setIsSaving] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -88,6 +89,25 @@ export default function App() {
   const [zoomScale, setZoomScale] = useState(0.48);
   const [isAutoFit, setIsAutoFit] = useState(true);
   const previewContainerRef = useRef(null);
+
+  // Online / Offline state listener for true zero-internet / zero-laptop independence
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      showToast('Online · Connected');
+    };
+    const handleOffline = () => {
+      setIsOnline(false);
+      showToast('⚡ Offline Mode · Running locally on phone storage');
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   // Listen for PWA beforeinstallprompt on Android/Chrome
   useEffect(() => {
@@ -541,6 +561,14 @@ export default function App() {
           </div>
         </div>
       </header>
+
+      {/* OFFLINE STATUS BANNER (Guarantees zero lap or net dependency) */}
+      {!isOnline && (
+        <div className="bg-slate-900 border-b border-blue-500/30 px-3 py-1.5 text-center text-xs text-blue-300 font-semibold flex items-center justify-center gap-2 animate-fadeIn z-30">
+          <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+          <span>Offline Mode · Running 100% locally on phone storage (No internet or laptop needed)</span>
+        </div>
+      )}
 
       {/* 2. TOAST POPUP */}
       {toastMessage && (

@@ -4,11 +4,15 @@ import App from './App.jsx'
 import './index.css'
 
 // Register PWA Service Worker for Mobile installation & offline support
-if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch((err) => {
-      console.log('SW registration note:', err);
-    });
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .then((reg) => {
+        console.log('Mr. DODO Offline Service Worker ready:', reg.scope);
+      })
+      .catch((err) => {
+        console.warn('SW registration note:', err);
+      });
   });
 }
 

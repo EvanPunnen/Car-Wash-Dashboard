@@ -18,7 +18,7 @@ export default function AddToMobileModal({
   const [selectedPlatform, setSelectedPlatform] = useState('apk'); // 'apk' | 'cloud' | 'ios'
 
   // Cloud HTTPS URL (Live on Cloudflare - accessible on ANY phone without Wi-Fi limits)
-  const cloudHttpsUrl = 'https://spam-substantially-great-easier.trycloudflare.com';
+  const cloudHttpsUrl = 'https://better-create-commercial-celebration.trycloudflare.com';
   
   // Local network IP (Wi-Fi)
   const localNetworkUrl = 'http://192.168.1.9:5173';
