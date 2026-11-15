@@ -62,7 +62,10 @@ jobs:
       - name: Stage APK for Release
         run: |
           mkdir -p build-output
-          cp android/app/build/outputs/apk/debug/app-debug.apk build-output/MrDodo-CarWash.apk
+          find android/ -name "*.apk" -exec cp {} build-output/MrDodo-CarWash.apk \;
+          ls -la build-output/
+          # Also copy APK to dist so it is directly downloadable from GitHub Pages
+          cp build-output/MrDodo-CarWash.apk dist/MrDodo-CarWash.apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
@@ -85,6 +88,7 @@ jobs:
             - **No Internet Needed:** All billing, vehicle bay tracking, and PDF generation work offline.
             - **Installation:** Download `MrDodo-CarWash.apk`, open it on your phone, and tap **Install**.
           files: build-output/MrDodo-CarWash.apk
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
