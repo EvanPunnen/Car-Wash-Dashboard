@@ -17,15 +17,14 @@ export default function AddToMobileModal({
   const [copied, setCopied] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState('apk'); // 'apk' | 'cloud' | 'ios'
 
-  // Cloud HTTPS URL (Live on Cloudflare - accessible on ANY phone without Wi-Fi limits)
-  const cloudHttpsUrl = 'https://better-create-commercial-celebration.trycloudflare.com';
+  // Permanent 24/7 Web App hosted on GitHub Pages (Always online, no laptop or server needed)
+  const permanentWebUrl = 'https://evanpunnen.github.io/Car-Wash-Dashboard/';
   
-  // Local network IP (Wi-Fi)
-  const localNetworkUrl = 'http://192.168.1.9:5173';
+  // Direct APK download from official GitHub release
+  const directApkUrl = 'https://github.com/EvanPunnen/Car-Wash-Dashboard/releases/download/release-apk-latest/MrDodo-CarWash.apk';
 
-  // Active URL for QR and sharing: Use cloud URL when on localhost for 100% phone compatibility!
-  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  const mobileUrl = isLocalhost ? cloudHttpsUrl : window.location.origin;
+  // Active URL for QR and sharing: Always point to permanent 24/7 URL for 100% phone compatibility!
+  const mobileUrl = permanentWebUrl;
 
   useEffect(() => {
     if (isOpen) {
@@ -52,7 +51,7 @@ export default function AddToMobileModal({
 
   const handleShareToWhatsApp = () => {
     const text = encodeURIComponent(
-      `Open Mr. DODO Car Wash & Detailing Billing App:\n${mobileUrl}\n\nOr download Android APK:\n${mobileUrl}/MrDodo-CarWash.apk`
+      `Open Mr. DODO Car Wash & Detailing Billing App:\n${permanentWebUrl}\n\nOr download Android APK:\n${directApkUrl}`
     );
     window.open(`https://wa.me/?text=${text}`, '_blank');
   };
@@ -121,8 +120,9 @@ export default function AddToMobileModal({
 
             <div className="flex items-center gap-2 pt-1">
               <a
-                href="/MrDodo-CarWash.apk"
-                download="MrDodo-CarWash.apk"
+                href={directApkUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={handleDownloadAPK}
                 className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl text-center shadow-md shadow-blue-950/50 transition active:scale-95 flex items-center justify-center gap-1.5"
               >
@@ -295,7 +295,7 @@ export default function AddToMobileModal({
                   <div>
                     <p className="font-semibold text-white">Scan QR or Open Cloud Link</p>
                     <p className="text-slate-400 text-[11px]">
-                      Open <code>{cloudHttpsUrl}</code> in Chrome on your phone.
+                      Open <code>{permanentWebUrl}</code> in Chrome on your phone.
                     </p>
                   </div>
                 </div>
