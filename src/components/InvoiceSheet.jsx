@@ -132,20 +132,20 @@ export default function InvoiceSheet({ bill, settings, id = "invoice-to-print" }
             </div>
           </div>
 
-          {/* 5. SERVICES TABLE (Positioned in Middle of Sheet) */}
-          <div className="w-full flex-1 flex flex-col justify-start">
-            {/* Table Header */}
-            <div className="border-t-[1.6px] border-b-[1.6px] border-neutral-900 py-2.5 px-3 flex justify-between items-center text-[14.5px] font-semibold text-neutral-900">
+          {/* 5. SERVICES TABLE */}
+          <div className="w-full">
+            {/* Table Header: Only line ABOVE Description, NO line below Description */}
+            <div className="border-t-[1.6px] border-neutral-900 pt-2.5 pb-2 px-3 flex justify-between items-center text-[14.5px] font-semibold text-neutral-900">
               <span>Description</span>
               <span>Amount</span>
             </div>
 
-            {/* Table Rows - Natural middle spacing */}
-            <div className="border-b-[1.6px] border-neutral-900 min-h-[180px] flex flex-col">
+            {/* Table Rows - Clean list directly under Description with bottom border */}
+            <div className="border-b-[1.6px] border-neutral-900 pb-2.5">
               {items.map((item, index) => (
                 <div
                   key={item.id || index}
-                  className="py-3.5 px-3 flex justify-between items-baseline text-[14px] border-b border-neutral-100 last:border-b-0"
+                  className="py-2.5 px-3 flex justify-between items-baseline text-[14px]"
                 >
                   <div
                     className="text-neutral-800 font-normal pr-4 flex-1 leading-normal"
@@ -161,15 +161,15 @@ export default function InvoiceSheet({ bill, settings, id = "invoice-to-print" }
               ))}
 
               {items.length === 0 && (
-                <div className="py-10 text-center text-neutral-400 italic text-xs">
+                <div className="py-6 text-center text-neutral-400 italic text-xs">
                   No services added
                 </div>
               )}
             </div>
           </div>
 
-          {/* 6. FINANCIALS SUMMARY - Directly below table line like original bill */}
-          <div className="mt-3.5 space-y-1.5 text-[14.5px]">
+          {/* 6. FINANCIALS SUMMARY - Directly below table line with NO gap */}
+          <div className="pt-1.5 space-y-1 text-[14.5px]">
             {/* Subtotal */}
             <div className="flex justify-between items-center px-1 font-semibold text-neutral-900">
               <span>Subtotal</span>
@@ -185,7 +185,7 @@ export default function InvoiceSheet({ bill, settings, id = "invoice-to-print" }
             )}
 
             {/* Total Amount */}
-            <div className="flex justify-between items-center px-1 pt-2 text-[21px] font-bold text-black">
+            <div className="flex justify-between items-center px-1 pt-1.5 text-[21px] font-bold text-black">
               <span>Total Amount</span>
               <span>{formatCurrency(total)}</span>
             </div>
