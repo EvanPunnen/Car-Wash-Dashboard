@@ -14,6 +14,7 @@ export default function DashboardView({
   bills,
   expenses,
   customers = [],
+  serviceJobs = [],
   onNavigateTab,
   onNewBill
 }) {
@@ -107,6 +108,14 @@ export default function DashboardView({
             >
               <Plus size={15} />
               <span>Create New Bill</span>
+            </button>
+
+            <button
+              onClick={() => onNavigateTab('updates')}
+              className="px-3.5 py-2 rounded-xl bg-cyan-950/40 hover:bg-cyan-900/40 text-cyan-300 border border-cyan-800/50 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition"
+            >
+              <Droplets size={14} className="text-cyan-400" />
+              <span>Live Updates ({serviceJobs.length})</span>
             </button>
 
             <button
@@ -312,22 +321,22 @@ export default function DashboardView({
           </div>
 
           <div
-            onClick={() => onNavigateTab('coatings')}
+            onClick={() => onNavigateTab('updates')}
             className="bg-slate-900/60 dark:bg-slate-900/60 bg-white border border-slate-800 dark:border-slate-800 border-slate-200 p-4 rounded-2xl space-y-1.5 cursor-pointer hover:border-cyan-500/50 transition group"
           >
             <div className="flex items-center justify-between text-cyan-400">
               <Droplets size={18} />
               <span className="text-[10px] font-bold uppercase tracking-wider bg-cyan-500/10 px-2 py-0.5 rounded">
-                Detailing
+                Live Bay
               </span>
             </div>
             <h4 className="text-sm font-bold text-white dark:text-white text-slate-900 group-hover:text-cyan-300 transition">
-              Washes & Steam Clean
+              Washes & Detailing
             </h4>
             <p className="text-2xl font-extrabold text-cyan-400 font-mono">
-              {serviceStats.washes} <span className="text-xs font-normal text-slate-400">Cars</span>
+              {serviceJobs.length || serviceStats.washes} <span className="text-xs font-normal text-slate-400">Vehicles</span>
             </p>
-            <p className="text-[11px] text-slate-400">Premium snow foam & interior sanitize</p>
+            <p className="text-[11px] text-slate-400">Live bay tracking & WhatsApp status</p>
           </div>
         </div>
       </div>

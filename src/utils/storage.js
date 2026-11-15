@@ -8,6 +8,7 @@ const SETTINGS_KEY = 'mr_dodo_settings_v2';
 const CUSTOMERS_KEY = 'mr_dodo_customers_v2';
 const EXPENSES_KEY = 'mr_dodo_expenses_v2';
 const TEAM_KEY = 'mr_dodo_team_v2';
+const SERVICE_JOBS_KEY = 'mr_dodo_service_jobs_v1';
 const AUTH_KEY = 'mr_dodo_auth_v1';
 const THEME_KEY = 'mr_dodo_theme_v1';
 
@@ -505,8 +506,158 @@ export function importBackup(jsonString) {
     if (data.expenses && Array.isArray(data.expenses)) {
       localStorage.setItem(EXPENSES_KEY, JSON.stringify(data.expenses));
     }
+    if (data.serviceJobs && Array.isArray(data.serviceJobs)) {
+      localStorage.setItem(SERVICE_JOBS_KEY, JSON.stringify(data.serviceJobs));
+    }
     return { success: true, count: data.bills ? data.bills.length : 0 };
   } catch (err) {
     return { success: false, error: err.message };
   }
+}
+
+// 7. SERVICE STAGES & LIVE VEHICLE STATUS TRACKER
+export const WASH_STAGES = [
+  { id: 'received', label: 'Car Received & Intake', short: 'Received', color: 'bg-blue-500' },
+  { id: 'washing', label: 'Taken for Foam Wash & Underbody', short: 'In Wash Bay', color: 'bg-cyan-500' },
+  { id: 'interior', label: 'Interior Vacuum & Steam Clean', short: 'Interior Clean', color: 'bg-indigo-500' },
+  { id: 'finishing', label: 'Wiping & Tyre Dressing', short: 'Finishing', color: 'bg-amber-500' },
+  { id: 'ready', label: 'Finished & Ready for Delivery', short: 'Ready', color: 'bg-emerald-500' }
+];
+
+export const COATING_STAGES = [
+  { id: 'received', label: 'Vehicle Received & Decontaminated', short: 'Received', color: 'bg-blue-500' },
+  { id: 'correction', label: 'Paint Correction & Compounding', short: 'Paint Polish', color: 'bg-amber-500' },
+  { id: 'application', label: 'Coating Applied in Dust-Free Bay', short: 'Coating Bay', color: 'bg-purple-500' },
+  { id: 'curing', label: 'Infrared Curing & Gloss Inspection', short: 'Curing', color: 'bg-cyan-500' },
+  { id: 'ready', label: 'Coating Finished & Ready for Delivery', short: 'Ready', color: 'bg-emerald-500' }
+];
+
+export const DEFAULT_SERVICE_JOBS = [
+  {
+    id: 'job-1',
+    customerName: 'Evan Punnen Jacob',
+    titlePrefix: 'Mr:',
+    customerPhone: '09495365617',
+    vehicleNumber: 'KL05AZ4249',
+    vehicleMake: 'Hyundai Creta',
+    serviceType: 'Premium Foam Wash & Steam Clean',
+    serviceCategory: 'wash',
+    currentStageIndex: 1, // Taken for Foam Wash
+    estimatedTime: 'Today 6:30 PM',
+    assignedTechnician: 'Car Wash Lead',
+    notes: 'Underbody pressure wash and interior deep clean',
+    photos: [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 'job-2',
+    customerName: 'Rev Fr. A V Varghese',
+    titlePrefix: 'Rev Fr:',
+    customerPhone: '9061367927',
+    vehicleNumber: 'KL 05 BE 6091',
+    vehicleMake: 'Toyota Hyrider',
+    serviceType: 'Borophine 9H Ceramic Coating (3 Year)',
+    serviceCategory: 'coating',
+    currentStageIndex: 2, // Coating Application
+    estimatedTime: 'Tomorrow 11:00 AM',
+    assignedTechnician: 'Detailing Specialist',
+    notes: '3-year warranty recoating & Sun film inspection',
+    photos: [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+];
+
+export function getServiceJobs() {
+  try {
+    const raw = localStorage.getItem(SERVICE_JOBS_KEY);
+    if (!raw) {
+      localStorage.setItem(SERVICE_JOBS_KEY, JSON.stringify(DEFAULT_SERVICE_JOBS));
+      return DEFAULT_SERVICE_JOBS;
+    }
+    return JSON.parse(raw);
+  } catch {
+    return DEFAULT_SERVICE_JOBS;
+  }
+}
+
+export function saveServiceJob(job) {
+  const jobs = getServiceJobs();
+  const index = jobs.findIndex(j => j.id === job.id);
+  let updated;
+  if (index >= 0) {
+    updated = [...jobs];
+    updated[index] = { ...job, updatedAt: new Date().toISOString() };
+  } else {
+    updated = [{ ...job, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }, ...jobs];
+  }
+  localStorage.setItem(SERVICE_JOBS_KEY, JSON.stringify(updated));
+  return updated;
+}
+
+export function deleteServiceJob(jobId) {
+  const jobs = getServiceJobs();
+  const updated = jobs.filter(j => j.id !== jobId);
+  localStorage.setItem(SERVICE_JOBS_KEY, JSON.stringify(updated));
+  return updated;
+}
+
+export function updateServiceJobStage(jobId, newStageIndex, note = '') {
+  const jobs = getServiceJobs();
+  const updated = jobs.map(job => {
+    if (job.id === jobId) {
+      return {
+        ...job,
+        currentStageIndex: newStageIndex,
+        notes: note || job.notes,
+        updatedAt: new Date().toISOString()
+      };
+    }
+    return job;
+  });
+  localStorage.setItem(SERVICE_JOBS_KEY, JSON.stringify(updated));
+  return updated;
+}
+
+export function getServiceUpdateMessage(job, stageIndex, settings) {
+  const isCoating = (job.serviceCategory || '').toLowerCase() === 'coating' || 
+    (job.serviceType || '').toLowerCase().includes('coating') || 
+    (job.serviceType || '').toLowerCase().includes('ppf');
+  
+  const stages = isCoating ? COATING_STAGES : WASH_STAGES;
+  const currentStage = stages[stageIndex] || stages[0];
+  const isFinished = stageIndex === stages.length - 1;
+
+  const customerName = `${job.titlePrefix || 'Mr:'} ${job.customerName || 'Valued Customer'}`.trim();
+  const shopName = settings?.shopName || 'Mr. DODO';
+  const shopSubtitle = settings?.shopSubtitle || 'PREMIUM DETAILING & CAR WASH';
+  const phones = settings?.phones || '8138037450, 9947885856';
+  const address = settings?.address || 'Manarcad - Thiruvanchoor Bypass Road, Kottayam';
+
+  if (isFinished) {
+    return `*${shopName}* - ${shopSubtitle}
+🎉 *YOUR CAR IS READY FOR DELIVERY!* 🎉
+
+Dear *${customerName}*,
+The service (*${job.serviceType || 'Service'}*) for your vehicle *${job.vehicleMake || 'Car'}* (*${job.vehicleNumber || ''}*) has been *COMPLETED*!
+
+✨ Sparkling clean, inspected, and ready for you to pick up.
+📍 *Studio:* ${address}
+📞 *Helpdesk:* ${phones}
+
+Thank you for trusting *${shopName}*! 🚗💨`;
+  }
+
+  return `*${shopName}* - ${shopSubtitle}
+🚗 *LIVE VEHICLE SERVICE UPDATE* 🚗
+
+Dear *${customerName}*,
+Your vehicle *${job.vehicleMake || 'Car'}* (*${job.vehicleNumber || ''}*) status update:
+
+📍 *Current Status:* *${currentStage.label}*
+⏰ *Estimated Completion:* ${job.estimatedTime || 'Shortly'}
+${job.assignedTechnician ? `👨‍💼 *Lead Specialist:* ${job.assignedTechnician}\n` : ''}${job.notes ? `📝 *Note:* ${job.notes}\n` : ''}
+Our team is handling your vehicle with utmost care. We will notify you once it's finished!
+📞 *Call Desk:* ${phones}`;
 }

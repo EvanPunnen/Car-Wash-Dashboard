@@ -6,7 +6,7 @@ import {
   Sparkles, CheckCircle, ChevronLeft, Car, RefreshCw,
   UserCheck, Cloud, HardDrive, Columns, LayoutGrid,
   Sun, Moon, Users, ShieldCheck, DollarSign, LogOut,
-  BarChart3, Menu, X, Smartphone, QrCode, Eye
+  BarChart3, Menu, X, Smartphone, QrCode, Eye, Droplets
 } from 'lucide-react';
 
 import InvoiceSheet from './components/InvoiceSheet';
@@ -24,6 +24,7 @@ import CustomersView from './components/CustomersView';
 import ExpensesView from './components/ExpensesView';
 import TeamView from './components/TeamView';
 import GoogleDriveView from './components/GoogleDriveView';
+import ServiceUpdatesView from './components/ServiceUpdatesView';
 
 import {
   getBills, saveBill, deleteBill, duplicateBill,
@@ -32,7 +33,8 @@ import {
   getAuthUser, logoutUser, getStoredTheme, setStoredTheme,
   getCustomers, saveCustomer, deleteCustomer,
   getExpenses, saveExpense, deleteExpense,
-  getTeamMembers, saveTeamMember, deleteTeamMember
+  getTeamMembers, saveTeamMember, deleteTeamMember,
+  getServiceJobs, saveServiceJob
 } from './utils/storage';
 import {
   downloadInvoicePDF, printInvoice, shareInvoiceWhatsApp, shareInvoicePDF,
@@ -65,6 +67,7 @@ export default function App() {
   const [customers, setCustomers] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [teamMembers, setTeamMembers] = useState([]);
+  const [serviceJobs, setServiceJobs] = useState([]);
   const [currentBill, setCurrentBill] = useState(SAMPLE_BILL);
   const [settings, setSettings] = useState(getShopSettings());
   const [managers, setManagers] = useState(getManagers());
@@ -127,6 +130,7 @@ export default function App() {
     setCustomers(getCustomers());
     setExpenses(getExpenses());
     setTeamMembers(getTeamMembers());
+    setServiceJobs(getServiceJobs());
     setManagers(getManagers());
     setActiveManagerUser(getActiveManager());
 
@@ -335,6 +339,50 @@ export default function App() {
     showToast(`Initialized invoice for ${cust.name}`);
   };
 
+  const handleGenerateBillFromJob = (job) => {
+    const nextNum = settings.nextInvoiceNum || 1042;
+    const isCoating = (job.serviceCategory || '').toLowerCase() === 'coating' ||
+      (job.serviceType || '').toLowerCase().includes('coating') ||
+      (job.serviceType || '').toLowerCase().includes('ppf');
+
+    let defaultDesc = job.serviceType || (isCoating ? 'Borophine Coating (3 year)' : 'Premium Foam Wash & Steam Clean');
+    let defaultAmount = '1,200.00';
+    if (isCoating) {
+      defaultAmount = '33,000.00';
+    } else if ((job.serviceType || '').toLowerCase().includes('sun film')) {
+      defaultAmount = '4,000.00';
+    } else if ((job.serviceType || '').toLowerCase().includes('silencer')) {
+      defaultAmount = '2,000.00';
+    } else if ((job.serviceType || '').toLowerCase().includes('wash')) {
+      defaultAmount = '1,200.00';
+    }
+
+    const newBill = {
+      id: `bill-${Date.now()}`,
+      invoiceNumber: `${settings.invoicePrefix || 'DODO-'}${nextNum}`,
+      date: new Date().toISOString().split('T')[0],
+      displayDate: formatDisplayDate(new Date()),
+      titlePrefix: job.titlePrefix || 'Mr:',
+      customerName: job.customerName || '',
+      customerPhone: job.customerPhone || '',
+      vehicleNumber: job.vehicleNumber || '',
+      vehicleMake: job.vehicleMake || '',
+      items: [
+        { id: `item-1`, description: defaultDesc, amount: defaultAmount }
+      ],
+      discount: 0,
+      warrantyNote: job.notes || (isCoating ? (settings.defaultWarrantyNote || 'Borophine Wash Every 3months to avail warranty. 1 free recoating') : ''),
+      paymentStatus: 'paid',
+      paymentMode: 'UPI / GPay',
+      managerName: activeManager.name
+    };
+
+    setCurrentBill(newBill);
+    setActiveTab('form');
+    confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+    showToast(`Bill generated for ${job.vehicleNumber} (${job.customerName})!`);
+  };
+
   const handleLogout = () => {
     if (window.confirm('Sign out of Mr. DODO management session?')) {
       logoutUser();
@@ -387,6 +435,7 @@ export default function App() {
               { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
               { id: 'form', label: 'Billing', icon: PenTool },
               { id: 'preview', label: 'A4 Bill', icon: FileText },
+              { id: 'updates', label: `Live Updates (${serviceJobs.length})`, icon: Droplets },
               { id: 'coatings', label: 'Coatings', icon: ShieldCheck },
               { id: 'customers', label: 'Customers', icon: Users },
               { id: 'expenses', label: 'Expenses', icon: DollarSign },
@@ -510,8 +559,23 @@ export default function App() {
             bills={bills}
             expenses={expenses}
             customers={customers}
+            serviceJobs={serviceJobs}
             onNavigateTab={(tab) => setActiveTab(tab)}
             onNewBill={handleNewBill}
+          />
+        )}
+
+        {/* TAB: LIVE SERVICE UPDATES & VEHICLE STATUS TRACKER */}
+        {activeTab === 'updates' && (
+          <ServiceUpdatesView
+            jobs={serviceJobs}
+            onUpdateJobs={(updatedJobs) => {
+              setServiceJobs(updatedJobs);
+            }}
+            settings={settings}
+            customers={customers}
+            onGenerateBillFromJob={handleGenerateBillFromJob}
+            onShowToast={showToast}
           />
         )}
 
@@ -871,13 +935,16 @@ export default function App() {
           </button>
 
           <button
-            onClick={() => setActiveTab('preview')}
-            className={`flex flex-col items-center py-1 px-1 transition ${
-              activeTab === 'preview' ? 'text-blue-500 font-bold' : 'text-slate-400'
+            onClick={() => setActiveTab('updates')}
+            className={`flex flex-col items-center py-1 px-1 transition relative ${
+              activeTab === 'updates' ? 'text-cyan-400 font-bold' : 'text-slate-400'
             }`}
           >
-            <FileText size={17} />
-            <span className="text-[9px] mt-0.5">A4 Bill</span>
+            <Droplets size={17} />
+            <span className="text-[9px] mt-0.5">Updates</span>
+            {serviceJobs.length > 0 && (
+              <span className="absolute top-0 right-1 w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+            )}
           </button>
 
           <button
@@ -942,6 +1009,7 @@ export default function App() {
           setCustomers(getCustomers());
           setExpenses(getExpenses());
           setTeamMembers(getTeamMembers());
+          setServiceJobs(getServiceJobs());
           showToast('Data refreshed');
         }}
       />
