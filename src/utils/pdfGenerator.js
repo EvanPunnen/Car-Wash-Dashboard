@@ -16,7 +16,12 @@ export function getVehicleFileName(bill, extension = 'pdf') {
  * Captures clean unscaled A4 canvas from invoice element without CSS transform distortion or scrolling offset
  */
 async function captureInvoiceCanvas(elementId) {
-  const source = document.getElementById(elementId) || document.getElementById('invoice-to-print');
+  // Check permanent universal hidden source first, then elementId, then invoice-to-print
+  const source =
+    document.getElementById('invoice-to-print-universal') ||
+    (elementId ? document.getElementById(elementId) : null) ||
+    document.getElementById('invoice-to-print');
+
   if (!source) {
     throw new Error('Invoice preview element not found.');
   }
@@ -29,10 +34,10 @@ async function captureInvoiceCanvas(elementId) {
   clone.style.boxShadow = 'none';
   clone.style.width = '794px'; // standard 96dpi A4 width in px
   clone.style.minHeight = '1123px';
-  clone.style.position = 'fixed';
-  clone.style.left = '0';
+  clone.style.position = 'absolute';
+  clone.style.left = '-9999px';
   clone.style.top = '0';
-  clone.style.zIndex = '999999';
+  clone.style.zIndex = '-9999';
   clone.style.backgroundColor = '#ffffff';
   clone.style.visibility = 'visible';
   clone.style.opacity = '1';
@@ -40,31 +45,39 @@ async function captureInvoiceCanvas(elementId) {
 
   document.body.appendChild(clone);
 
-  // Wait for fonts and images to load
-  if (document.fonts) {
-    await document.fonts.ready;
+  try {
+    // Wait for fonts and images to load
+    if (document.fonts) {
+      await Promise.race([
+        document.fonts.ready,
+        new Promise(r => setTimeout(r, 200))
+      ]);
+    }
+    await new Promise(r => setTimeout(r, 50));
+
+    const cloneHeight = Math.max(1123, clone.scrollHeight || 1123);
+
+    const canvas = await html2canvas(clone, {
+      scale: 2.0, // High clarity A4 print without freezing mobile memory
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      width: 794,
+      height: cloneHeight,
+      windowWidth: 794,
+      x: 0,
+      y: 0,
+      scrollX: 0,
+      scrollY: 0
+    });
+
+    return canvas;
+  } finally {
+    if (clone.parentNode) {
+      document.body.removeChild(clone);
+    }
   }
-  await new Promise(r => setTimeout(r, 60));
-
-  const cloneHeight = Math.max(1123, clone.scrollHeight);
-
-  const canvas = await html2canvas(clone, {
-    scale: 2.5,
-    useCORS: true,
-    allowTaint: true,
-    backgroundColor: '#ffffff',
-    logging: false,
-    width: 794,
-    height: cloneHeight,
-    windowWidth: 794,
-    x: 0,
-    y: 0,
-    scrollX: 0,
-    scrollY: 0
-  });
-
-  document.body.removeChild(clone);
-  return canvas;
 }
 
 /**
@@ -106,7 +119,22 @@ export async function downloadInvoicePDF(elementId, bill) {
     }
   }
 
-  pdf.save(fileName);
+  // Save with reliable mobile Blob fallback so it never hangs
+  try {
+    pdf.save(fileName);
+  } catch (saveErr) {
+    console.warn('pdf.save failed, trying blob trigger', saveErr);
+    const blob = pdf.output('blob');
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+  }
+
   return fileName;
 }
 
@@ -115,8 +143,10 @@ export async function downloadInvoicePDF(elementId, bill) {
  */
 export async function saveToFileManager(elementId, bill) {
   const fileName = getVehicleFileName(bill, 'pdf');
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-  if ('showSaveFilePicker' in window) {
+  // Use showSaveFilePicker only on desktop browsers where it is well supported
+  if (!isMobile && 'showSaveFilePicker' in window) {
     try {
       const handle = await window.showSaveFilePicker({
         suggestedName: fileName,
@@ -144,7 +174,7 @@ export async function saveToFileManager(elementId, bill) {
     }
   }
 
-  // Fallback to standard download
+  // Instant direct mobile download fallback
   await downloadInvoicePDF(elementId, bill);
   return { success: true, fileName };
 }

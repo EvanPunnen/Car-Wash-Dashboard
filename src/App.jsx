@@ -349,15 +349,15 @@ export default function App() {
       } backdrop-blur-md border-b px-3 sm:px-4 py-2 safe-pt transition-colors`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-3">
           
-          {/* Brand Logo & Name */}
+          {/* Brand Logo & Name (Enhanced Round Center Fit) */}
           <div className="flex items-center gap-2.5">
-            <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl ${
-              isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-100 border-slate-300'
-            } border flex items-center justify-center p-1.5 shadow-md`}>
+            <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full ${
+              isDark ? 'bg-slate-950 border-slate-700/80 ring-2 ring-blue-500/20' : 'bg-white border-slate-300 ring-2 ring-slate-200'
+            } border flex items-center justify-center p-1.5 shadow-md flex-shrink-0 overflow-hidden`}>
               <img
                 src={isDark ? LOGO_ICON_WHITE_BASE64 : LOGO_ICON_BASE64}
                 alt="Mr. DODO Logo"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain filter drop-shadow-sm"
               />
             </div>
             <div>
@@ -947,6 +947,29 @@ export default function App() {
         installPrompt={deferredInstallPrompt}
         onInstallApp={handleInstallApp}
       />
+
+      {/* PERMANENT HIDDEN INVOICE SOURCE FOR 100% RELIABLE INSTANT PDF GENERATION FROM ANY TAB */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '-9999px',
+          top: '0',
+          width: '794px',
+          minHeight: '1123px',
+          backgroundColor: '#ffffff',
+          zIndex: -9999,
+          pointerEvents: 'none',
+          visibility: 'visible',
+          opacity: 1
+        }}
+        aria-hidden="true"
+      >
+        <InvoiceSheet
+          bill={currentBill}
+          settings={settings}
+          id="invoice-to-print-universal"
+        />
+      </div>
     </div>
   );
 }

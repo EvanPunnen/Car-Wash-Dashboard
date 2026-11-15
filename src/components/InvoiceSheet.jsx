@@ -103,28 +103,28 @@ export default function InvoiceSheet({ bill, settings, id = "invoice-to-print" }
             </h1>
           </div>
 
-          {/* 4. CUSTOMER & VEHICLE DETAILS (Properly spaced across full width) */}
-          <div className="flex justify-between items-start text-[14.5px] text-neutral-900 mb-7">
+          {/* 4. CUSTOMER & VEHICLE DETAILS (Natural spacing matching official bill) */}
+          <div className="flex justify-between items-start text-[14.5px] text-neutral-900 mb-4">
             {/* Left Column: Customer Details */}
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <div className="flex items-baseline">
-                <span className="font-bold text-black min-w-[56px] text-left">{displayPrefix}&nbsp;</span>
+                <span className="font-bold text-black">{displayPrefix}&nbsp;</span>
                 <span className="font-normal text-neutral-900">{cleanCustomerName}</span>
               </div>
               <div className="flex items-baseline">
-                <span className="font-bold text-black min-w-[56px] text-left">Phno:&nbsp;</span>
+                <span className="font-bold text-black">Phno:&nbsp;</span>
                 <span className="font-normal text-neutral-900 font-mono">{bill?.customerPhone || ''}</span>
               </div>
             </div>
 
-            {/* Right Column: Vehicle Details - pushed to the right side of the sheet */}
-            <div className="space-y-2 min-w-[270px]">
+            {/* Right Column: Vehicle Details - clean natural spacing */}
+            <div className="space-y-1.5 min-w-[220px]">
               <div className="flex items-baseline">
-                <span className="font-bold text-black min-w-[136px] text-left whitespace-nowrap">Vehicle Number:&nbsp;</span>
+                <span className="font-bold text-black whitespace-nowrap">Vehicle Number:&nbsp;</span>
                 <span className="font-normal text-neutral-900 uppercase tracking-wider font-mono">{bill?.vehicleNumber || ''}</span>
               </div>
               <div className="flex items-baseline">
-                <span className="font-bold text-black min-w-[136px] text-left whitespace-nowrap">Make:&nbsp;</span>
+                <span className="font-bold text-black whitespace-nowrap">Make:&nbsp;</span>
                 <span className="font-normal text-neutral-900">{bill?.vehicleMake || ''}</span>
               </div>
             </div>
@@ -138,8 +138,8 @@ export default function InvoiceSheet({ bill, settings, id = "invoice-to-print" }
               <span>Amount</span>
             </div>
 
-            {/* Table Rows */}
-            <div className="border-b-[1.6px] border-neutral-900 min-h-[150px]">
+            {/* Table Rows - Natural height without forced empty gaps */}
+            <div className="border-b-[1.6px] border-neutral-900">
               {items.map((item, index) => (
                 <div
                   key={item.id || index}
@@ -159,33 +159,32 @@ export default function InvoiceSheet({ bill, settings, id = "invoice-to-print" }
               ))}
 
               {items.length === 0 && (
-                <div className="py-8 text-center text-neutral-400 italic text-xs">
+                <div className="py-6 text-center text-neutral-400 italic text-xs">
                   No services added
                 </div>
               )}
             </div>
           </div>
 
-          {/* 6. FINANCIALS SUMMARY */}
-          <div className="mt-4 space-y-2 text-[14.5px]">
+          {/* 6. FINANCIALS SUMMARY - Directly below table line like original bill */}
+          <div className="mt-3 space-y-1.5 text-[14.5px]">
             {/* Subtotal */}
             <div className="flex justify-between items-center px-1 font-semibold text-neutral-900">
-              <span>Subtotal:</span>
+              <span>Subtotal</span>
               <span>{formatCurrency(subtotal)}</span>
             </div>
 
-            {/* Discount */}
-            <div className="flex justify-between items-center px-1 font-semibold text-neutral-900">
-              <span>Discount:</span>
-              <span>{discount > 0 ? `-${formatCurrency(discount)}` : formatCurrency(0)}</span>
-            </div>
-
-            {/* Separator line */}
-            <div className="border-t-[1.8px] border-neutral-900 my-1.5"></div>
+            {/* Discount (shown when applicable) */}
+            {discount > 0 && (
+              <div className="flex justify-between items-center px-1 font-semibold text-neutral-900">
+                <span>Discount</span>
+                <span>-{formatCurrency(discount)}</span>
+              </div>
+            )}
 
             {/* Total Amount */}
-            <div className="flex justify-between items-center px-1 text-[21px] font-bold text-black">
-              <span style={{ wordSpacing: '3px' }}>Total&nbsp;Amount:</span>
+            <div className="flex justify-between items-center px-1 pt-2 text-[21px] font-bold text-black">
+              <span>Total Amount</span>
               <span>{formatCurrency(total)}</span>
             </div>
           </div>
