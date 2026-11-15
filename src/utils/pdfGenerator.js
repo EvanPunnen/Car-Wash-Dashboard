@@ -102,8 +102,9 @@ export async function downloadInvoicePDF(elementId, bill) {
   const imgProps = pdf.getImageProperties(imgData);
   const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-  if (imgHeight <= pdfHeight) {
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, imgHeight, undefined, 'FAST');
+  // Fit on exactly 1 single A4 page for standard invoices (prevents fractional sub-millimeter second page)
+  if (imgHeight <= 320) {
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
   } else {
     let heightLeft = imgHeight;
     let position = 0;
@@ -111,7 +112,7 @@ export async function downloadInvoicePDF(elementId, bill) {
     pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
     heightLeft -= pdfHeight;
 
-    while (heightLeft > 0) {
+    while (heightLeft > 5) {
       position = position - pdfHeight;
       pdf.addPage();
       pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
@@ -136,6 +137,55 @@ export async function downloadInvoicePDF(elementId, bill) {
   }
 
   return fileName;
+}
+
+/**
+ * Shares the actual PDF file directly via native Share (WhatsApp, Email, Drive, etc.) on mobile devices.
+ * Falls back to auto-download + WhatsApp text message on desktop browsers.
+ */
+export async function shareInvoicePDF(elementId, bill, settings) {
+  const fileName = getVehicleFileName(bill, 'pdf');
+  const canvas = await captureInvoiceCanvas(elementId);
+  const imgData = canvas.toDataURL('image/png', 1.0);
+
+  const pdf = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4',
+    compress: true
+  });
+
+  pdf.addImage(imgData, 'PNG', 0, 0, 210, 297, undefined, 'FAST');
+  const blob = pdf.output('blob');
+  const pdfFile = new File([blob], fileName, { type: 'application/pdf' });
+
+  // 1. Try Native Web Share API with actual PDF file
+  if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+    try {
+      await navigator.share({
+        files: [pdfFile],
+        title: fileName,
+        text: `Mr. DODO Detailing & Car Wash Invoice for ${bill.customerName || 'Customer'} (${bill.vehicleNumber || ''})`
+      });
+      return { success: true, method: 'native-share' };
+    } catch (err) {
+      if (err.name === 'AbortError') return { canceled: true };
+      console.warn('Native file share canceled or failed', err);
+    }
+  }
+
+  // 2. Fallback for desktop: download PDF file AND open WhatsApp with text
+  const blobUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = blobUrl;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+
+  shareInvoiceWhatsApp(bill, settings);
+  return { success: true, method: 'download-and-whatsapp' };
 }
 
 /**

@@ -35,7 +35,7 @@ import {
   getTeamMembers, saveTeamMember, deleteTeamMember
 } from './utils/storage';
 import {
-  downloadInvoicePDF, printInvoice, shareInvoiceWhatsApp,
+  downloadInvoicePDF, printInvoice, shareInvoiceWhatsApp, shareInvoicePDF,
   saveToFileManager, openGoogleDrive, getVehicleFileName
 } from './utils/pdfGenerator';
 import { SAMPLE_BILL } from './constants/defaultData';
@@ -299,8 +299,14 @@ export default function App() {
     printInvoice();
   };
 
-  const handleShareWhatsApp = (targetBill = currentBill) => {
-    shareInvoiceWhatsApp(targetBill, settings);
+  const handleShareWhatsApp = async (targetBill = currentBill) => {
+    try {
+      showToast('Preparing PDF file to share...');
+      await shareInvoicePDF('invoice-to-print-universal', targetBill, settings);
+    } catch (err) {
+      console.warn('Share file error, falling back to WhatsApp text', err);
+      shareInvoiceWhatsApp(targetBill, settings);
+    }
   };
 
   const handleCreateBillForCustomer = (cust) => {
@@ -955,7 +961,9 @@ export default function App() {
           left: '-9999px',
           top: '0',
           width: '794px',
-          minHeight: '1123px',
+          height: '1123px',
+          maxHeight: '1123px',
+          overflow: 'hidden',
           backgroundColor: '#ffffff',
           zIndex: -9999,
           pointerEvents: 'none',

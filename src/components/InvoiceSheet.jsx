@@ -43,17 +43,19 @@ export default function InvoiceSheet({ bill, settings, id = "invoice-to-print" }
         className="invoice-a4-sheet bg-white text-black relative shadow-2xl transition-all duration-300 select-none flex flex-col justify-between"
         style={{
           width: '210mm',
-          minHeight: '297mm',
-          padding: '16mm 20mm 15mm 20mm',
+          height: '297mm',
+          maxHeight: '297mm',
+          padding: '14mm 18mm 12mm 18mm',
           boxSizing: 'border-box',
+          overflow: 'hidden',
           backgroundColor: '#ffffff',
           fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
           letterSpacing: '0px',
           wordSpacing: 'normal'
         }}
       >
-        {/* UPPER BODY CONTAINER */}
-        <div>
+        {/* UPPER & MIDDLE BODY CONTAINER */}
+        <div className="flex-1 flex flex-col">
           {/* 1. HEADER: BRAND LOGO & CONTACT INFO */}
           <div className="flex flex-col items-center justify-center text-center pt-1">
             {/* Geometric Emblem Logo */}
@@ -81,7 +83,7 @@ export default function InvoiceSheet({ bill, settings, id = "invoice-to-print" }
               {currentSettings.address || "Manarcad - Thiruvanchoor Bypass Road, Manarcad, Kottayam"}
             </p>
 
-            {/* Phones & Business Email Line (as requested: add mail id also in the bill) */}
+            {/* Phones & Business Email Line */}
             <p className="text-[12.5px] leading-relaxed text-neutral-800 font-normal mt-0.5">
               <span>{currentSettings.phones || "Phno: 8138037450, 9947885856"}</span>
               <span className="mx-2 text-neutral-400">|</span>
@@ -90,14 +92,14 @@ export default function InvoiceSheet({ bill, settings, id = "invoice-to-print" }
           </div>
 
           {/* 2. DATE (Right Aligned) */}
-          <div className="flex justify-end mt-4">
+          <div className="flex justify-end mt-3.5">
             <p className="text-[14px] text-neutral-800 font-normal">
               Date:&nbsp;{bill?.displayDate || bill?.date || '7 March 2026'}
             </p>
           </div>
 
           {/* 3. INVOICE TITLE (Centered Bold) */}
-          <div className="text-center my-5">
+          <div className="text-center my-4">
             <h1 className="text-[26px] font-extrabold tracking-wide text-black uppercase">
               {currentSettings.invoiceTitle || "INVOICE"}
             </h1>
@@ -130,20 +132,20 @@ export default function InvoiceSheet({ bill, settings, id = "invoice-to-print" }
             </div>
           </div>
 
-          {/* 5. SERVICES TABLE */}
-          <div className="w-full">
+          {/* 5. SERVICES TABLE (Positioned in Middle of Sheet) */}
+          <div className="w-full flex-1 flex flex-col justify-start">
             {/* Table Header */}
             <div className="border-t-[1.6px] border-b-[1.6px] border-neutral-900 py-2.5 px-3 flex justify-between items-center text-[14.5px] font-semibold text-neutral-900">
               <span>Description</span>
               <span>Amount</span>
             </div>
 
-            {/* Table Rows - Natural height without forced empty gaps */}
-            <div className="border-b-[1.6px] border-neutral-900">
+            {/* Table Rows - Natural middle spacing */}
+            <div className="border-b-[1.6px] border-neutral-900 min-h-[180px] flex flex-col">
               {items.map((item, index) => (
                 <div
                   key={item.id || index}
-                  className="py-3 px-3 flex justify-between items-baseline text-[14px] border-b border-neutral-100 last:border-b-0"
+                  className="py-3.5 px-3 flex justify-between items-baseline text-[14px] border-b border-neutral-100 last:border-b-0"
                 >
                   <div
                     className="text-neutral-800 font-normal pr-4 flex-1 leading-normal"
@@ -159,7 +161,7 @@ export default function InvoiceSheet({ bill, settings, id = "invoice-to-print" }
               ))}
 
               {items.length === 0 && (
-                <div className="py-6 text-center text-neutral-400 italic text-xs">
+                <div className="py-10 text-center text-neutral-400 italic text-xs">
                   No services added
                 </div>
               )}
@@ -167,7 +169,7 @@ export default function InvoiceSheet({ bill, settings, id = "invoice-to-print" }
           </div>
 
           {/* 6. FINANCIALS SUMMARY - Directly below table line like original bill */}
-          <div className="mt-3 space-y-1.5 text-[14.5px]">
+          <div className="mt-3.5 space-y-1.5 text-[14.5px]">
             {/* Subtotal */}
             <div className="flex justify-between items-center px-1 font-semibold text-neutral-900">
               <span>Subtotal</span>
@@ -191,7 +193,7 @@ export default function InvoiceSheet({ bill, settings, id = "invoice-to-print" }
 
           {/* 7. WARRANTY / OFFER NOTE BOX */}
           {(bill?.warrantyNote || currentSettings.defaultWarrantyNote) && (
-            <div className="mt-7 border border-neutral-300 rounded-[3px] p-3 bg-white">
+            <div className="mt-5 border border-neutral-300 rounded-[3px] p-3 bg-white">
               <p
                 className="italic text-[12.5px] text-neutral-800 leading-normal"
                 style={{ wordSpacing: '2px' }}
@@ -203,7 +205,7 @@ export default function InvoiceSheet({ bill, settings, id = "invoice-to-print" }
         </div>
 
         {/* 8. FOOTER: THANK YOU & TEAM */}
-        <div className="pt-8 pb-2 text-center space-y-1">
+        <div className="pt-6 pb-2 text-center space-y-1">
           <h3 className="text-[16px] font-bold text-black tracking-tight">
             {currentSettings.footerThankYou || "Thank You"}
           </h3>
