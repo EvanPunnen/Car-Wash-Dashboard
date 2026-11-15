@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.mrdodo.carwash",
+        "sha256_cert_fingerprints": ["D1:67:48:04:A7:D6:81:7E:C6:09:8A:71:3C:AB:EA:53:84:70:0C:82:66:BD:C4:5E:CB:83:63:89:15:5E:50:0E"]
+      }
+    }]
