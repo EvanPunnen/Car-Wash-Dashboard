@@ -68,13 +68,13 @@ export default function AddToMobileModal({
         {/* 1. MODAL HEADER */}
         <div className="p-5 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900/95 backdrop-blur-md z-10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-blue-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <Smartphone size={20} className="text-white" />
+            <div className="w-10 h-10 rounded-2xl bg-blue-600/15 border border-blue-500/25 flex items-center justify-center text-blue-400">
+              <Smartphone size={20} />
             </div>
             <div>
-              <h3 className="text-base font-extrabold text-white flex items-center gap-2">
+              <h3 className="text-base font-bold text-white flex items-center gap-2">
                 Mobile App & APK
-                <span className="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold uppercase">
+                <span className="text-[10px] bg-blue-950/80 text-blue-400 border border-blue-800/60 px-2 py-0.5 rounded-full font-bold uppercase font-mono">
                   Ready
                 </span>
               </h3>
@@ -95,26 +95,26 @@ export default function AddToMobileModal({
         {/* 2. BODY CONTENT */}
         <div className="p-5 space-y-5">
 
-          {/* 🌟 1. ANDROID APK DIRECT DOWNLOAD (USER REQUESTED) */}
-          <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white rounded-2xl p-4 shadow-xl space-y-3 border border-emerald-400/40">
+          {/* 🌟 1. ANDROID APK DIRECT DOWNLOAD */}
+          <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-md space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
-                  <Download size={20} className="text-white" />
+                <div className="w-9 h-9 rounded-xl bg-blue-600/15 border border-blue-500/20 text-blue-400 flex items-center justify-center">
+                  <Download size={18} />
                 </div>
                 <div>
-                  <h4 className="font-extrabold text-sm text-white flex items-center gap-1.5">
+                  <h4 className="font-bold text-sm text-white flex items-center gap-1.5">
                     Android APK File
-                    <span className="text-[10px] bg-white/25 px-1.5 py-0.2 rounded font-bold">
+                    <span className="text-[10px] bg-slate-800 text-slate-300 px-1.5 py-0.2 rounded font-mono">
                       1.1 MB
                     </span>
                   </h4>
-                  <p className="text-[11px] text-emerald-100">
+                  <p className="text-[11px] text-slate-400">
                     Standalone installer file for Android phones
                   </p>
                 </div>
               </div>
-              <span className="text-[10px] bg-emerald-950/40 text-emerald-200 border border-emerald-400/30 px-2 py-0.5 rounded-md font-bold uppercase">
+              <span className="text-[10px] bg-blue-950/60 text-blue-400 border border-blue-800/60 px-2 py-0.5 rounded-md font-bold uppercase">
                 Official
               </span>
             </div>
@@ -124,23 +124,23 @@ export default function AddToMobileModal({
                 href="/MrDodo-CarWash.apk"
                 download="MrDodo-CarWash.apk"
                 onClick={handleDownloadAPK}
-                className="flex-1 py-2.5 bg-white hover:bg-emerald-50 text-emerald-900 text-xs font-extrabold rounded-xl text-center shadow-lg transition active:scale-95 flex items-center justify-center gap-1.5"
+                className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl text-center shadow-md shadow-blue-950/50 transition active:scale-95 flex items-center justify-center gap-1.5"
               >
                 <Download size={15} />
                 <span>Download MrDodo-CarWash.apk</span>
               </a>
               <button
                 onClick={handleShareToWhatsApp}
-                className="p-2.5 bg-emerald-900/40 hover:bg-emerald-900/70 text-white border border-emerald-400/30 rounded-xl transition shadow"
+                className="p-2.5 bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 hover:border-slate-700 rounded-xl transition shadow"
                 title="Send APK download link to your phone via WhatsApp"
               >
                 <Share2 size={16} />
               </button>
             </div>
 
-            <div className="text-[10px] text-emerald-100/90 bg-emerald-900/30 rounded-lg p-2 flex items-center gap-1.5">
-              <CheckCircle2 size={13} className="text-emerald-300 flex-shrink-0" />
-              <span>Tap downloaded file on your phone ➔ Tap <strong>Install</strong>. No internet needed after installation!</span>
+            <div className="text-[10px] text-slate-300 bg-slate-900 border border-slate-800 rounded-lg p-2 flex items-center gap-1.5">
+              <CheckCircle2 size={13} className="text-blue-400 flex-shrink-0" />
+              <span>Tap downloaded file on your phone ➔ Tap <strong>Install</strong>. Runs offline seamlessly!</span>
             </div>
           </div>
 

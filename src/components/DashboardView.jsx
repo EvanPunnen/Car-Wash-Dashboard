@@ -66,18 +66,14 @@ export default function DashboardView({
   return (
     <div className="space-y-5 pb-24 max-w-5xl mx-auto animate-fadeIn">
       {/* 0. HOME HERO BANNER CARD (Enhanced Round Center Logo & High Clarity Detailing Visuals) */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-slate-900 via-slate-900/95 to-slate-950 border border-slate-800 p-5 sm:p-7 shadow-2xl text-center">
-        {/* Subtle Luxury Glowing Ambient Light */}
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-80 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 right-10 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-
+      <div className="relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800 p-6 sm:p-7 shadow-xl text-center">
         <div className="relative z-10 flex flex-col items-center">
           {/* Round Center-Fit Official Emblem Badge */}
-          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-slate-950 border-2 border-amber-400/40 ring-4 ring-blue-500/20 shadow-2xl flex items-center justify-center p-3 mb-3.5 group hover:scale-105 transition-transform duration-300">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-slate-950 border-2 border-slate-700 ring-2 ring-blue-500/30 shadow-xl flex items-center justify-center p-3 mb-3.5 group hover:scale-105 transition-transform duration-300">
             <img
               src={LOGO_ICON_WHITE_BASE64}
               alt="Mr. DODO Logo"
-              className="w-full h-full object-contain filter drop-shadow-[0_2px_10px_rgba(255,255,255,0.3)]"
+              className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(255,255,255,0.25)]"
             />
           </div>
 
@@ -87,8 +83,8 @@ export default function DashboardView({
               <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">
                 Mr. DODO
               </h2>
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-950/80 text-blue-400 border border-blue-800/60 px-2 py-0.5 rounded-full flex items-center gap-1 font-mono">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
                 Active Studio
               </span>
             </div>
@@ -104,7 +100,7 @@ export default function DashboardView({
           <div className="flex flex-wrap items-center justify-center gap-2.5 mt-5">
             <button
               onClick={onNewBill}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold shadow-lg shadow-blue-500/25 flex items-center gap-1.5 active:scale-95 transition"
+              className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-md shadow-blue-950/50 flex items-center gap-1.5 active:scale-95 transition"
             >
               <Plus size={15} />
               <span>Create New Bill</span>
@@ -112,15 +108,15 @@ export default function DashboardView({
 
             <button
               onClick={() => onNavigateTab('updates')}
-              className="px-3.5 py-2 rounded-xl bg-cyan-950/40 hover:bg-cyan-900/40 text-cyan-300 border border-cyan-800/50 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition"
+              className="px-3.5 py-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-white border border-slate-800 hover:border-slate-700 text-xs font-semibold flex items-center gap-1.5 active:scale-95 transition"
             >
-              <Droplets size={14} className="text-cyan-400" />
+              <Droplets size={14} className="text-blue-400" />
               <span>Live Updates ({serviceJobs.length})</span>
             </button>
 
             <button
               onClick={() => onNavigateTab('preview')}
-              className="px-4 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition"
+              className="px-4 py-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-white border border-slate-800 hover:border-slate-700 text-xs font-semibold flex items-center gap-1.5 active:scale-95 transition"
             >
               <FileText size={14} className="text-blue-400" />
               <span>View A4 Bill</span>
@@ -129,15 +125,15 @@ export default function DashboardView({
 
             <button
               onClick={() => onNavigateTab('coatings')}
-              className="px-3.5 py-2 rounded-xl bg-purple-950/40 hover:bg-purple-900/40 text-purple-300 border border-purple-800/50 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition"
+              className="px-3.5 py-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-white border border-slate-800 hover:border-slate-700 text-xs font-semibold flex items-center gap-1.5 active:scale-95 transition"
             >
-              <ShieldCheck size={14} className="text-purple-400" />
+              <ShieldCheck size={14} className="text-blue-400" />
               <span>Coatings ({serviceStats.coatings})</span>
             </button>
 
             <button
               onClick={() => onNavigateTab('customers')}
-              className="px-3.5 py-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 text-slate-300 border border-slate-700/60 text-xs font-semibold flex items-center gap-1.5 active:scale-95 transition"
+              className="px-3.5 py-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-white border border-slate-800 hover:border-slate-700 text-xs font-semibold flex items-center gap-1.5 active:scale-95 transition"
             >
               <Users size={14} className="text-blue-400" />
               <span>Clients ({customers.length})</span>
@@ -216,13 +212,13 @@ export default function DashboardView({
       </div>
 
       {/* 2. TODAY QUICK BANNER */}
-      <div className="bg-gradient-to-r from-blue-900/40 via-slate-900/60 to-purple-900/40 border border-blue-500/30 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg">
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-md">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0">
-            <Calendar size={20} />
+          <div className="w-10 h-10 rounded-xl bg-blue-600/15 text-blue-400 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
+            <Calendar size={18} />
           </div>
           <div>
-            <h4 className="font-bold text-sm text-white dark:text-white text-slate-900">
+            <h4 className="font-bold text-sm text-white">
               Today's Performance ({formatDisplayDate(todayStr)})
             </h4>
             <p className="text-xs text-slate-400">
@@ -232,25 +228,25 @@ export default function DashboardView({
         </div>
         <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
           <div className="text-right">
-            <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Today Net</span>
+            <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-medium">Today Net</span>
             <span className="text-base font-bold font-mono text-emerald-400">
               ₹{formatCurrency(todaySales - todayExpenses)}
             </span>
           </div>
           <button
             onClick={onNewBill}
-            className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold flex items-center gap-1 transition shadow-md shadow-blue-500/30"
+            className="px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-sm"
           >
             <Plus size={14} /> Bill Car
           </button>
         </div>
       </div>
 
-      {/* 3. SERVICE BREAKDOWN (With Clean Right Arrow) */}
+      {/* 3. SERVICE BREAKDOWN (Blue / Black / White Theme) */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="font-bold text-sm text-white dark:text-white text-slate-900 flex items-center gap-2">
-            <Sparkles size={16} className="text-amber-400" />
+          <h3 className="font-bold text-sm text-white flex items-center gap-2">
+            <Sparkles size={15} className="text-blue-400" />
             Service Volume Breakdown
           </h3>
           <button
@@ -265,18 +261,18 @@ export default function DashboardView({
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div
             onClick={() => onNavigateTab('coatings')}
-            className="bg-slate-900/60 dark:bg-slate-900/60 bg-white border border-slate-800 dark:border-slate-800 border-slate-200 p-4 rounded-2xl space-y-1.5 cursor-pointer hover:border-purple-500/50 transition group"
+            className="bg-slate-900 border border-slate-800 hover:border-blue-500/50 p-4 rounded-2xl space-y-1.5 cursor-pointer transition group"
           >
-            <div className="flex items-center justify-between text-purple-400">
+            <div className="flex items-center justify-between text-blue-400">
               <ShieldCheck size={18} />
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-purple-500/10 px-2 py-0.5 rounded">
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-950/60 text-blue-400 border border-blue-800/60 px-2 py-0.5 rounded">
                 High Value
               </span>
             </div>
-            <h4 className="text-sm font-bold text-white dark:text-white text-slate-900 group-hover:text-purple-300 transition">
+            <h4 className="text-sm font-bold text-white group-hover:text-blue-300 transition">
               Coatings & PPF
             </h4>
-            <p className="text-2xl font-extrabold text-purple-400 font-mono">
+            <p className="text-2xl font-extrabold text-white font-mono">
               {serviceStats.coatings} <span className="text-xs font-normal text-slate-400">Cars</span>
             </p>
             <p className="text-[11px] text-slate-400">Borophine & Ceramic 9H/10H</p>
@@ -284,18 +280,18 @@ export default function DashboardView({
 
           <div
             onClick={() => onNavigateTab('coatings')}
-            className="bg-slate-900/60 dark:bg-slate-900/60 bg-white border border-slate-800 dark:border-slate-800 border-slate-200 p-4 rounded-2xl space-y-1.5 cursor-pointer hover:border-amber-500/50 transition group"
+            className="bg-slate-900 border border-slate-800 hover:border-blue-500/50 p-4 rounded-2xl space-y-1.5 cursor-pointer transition group"
           >
-            <div className="flex items-center justify-between text-amber-400">
+            <div className="flex items-center justify-between text-blue-400">
               <Sun size={18} />
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 px-2 py-0.5 rounded">
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-950/60 text-blue-400 border border-blue-800/60 px-2 py-0.5 rounded">
                 Solar Heat
               </span>
             </div>
-            <h4 className="text-sm font-bold text-white dark:text-white text-slate-900 group-hover:text-amber-300 transition">
+            <h4 className="text-sm font-bold text-white group-hover:text-blue-300 transition">
               Sun Film / Tints
             </h4>
-            <p className="text-2xl font-extrabold text-amber-400 font-mono">
+            <p className="text-2xl font-extrabold text-white font-mono">
               {serviceStats.sunfilm} <span className="text-xs font-normal text-slate-400">Cars</span>
             </p>
             <p className="text-[11px] text-slate-400">Full Car & CR70 Clear Windshield</p>
@@ -303,18 +299,18 @@ export default function DashboardView({
 
           <div
             onClick={() => onNavigateTab('coatings')}
-            className="bg-slate-900/60 dark:bg-slate-900/60 bg-white border border-slate-800 dark:border-slate-800 border-slate-200 p-4 rounded-2xl space-y-1.5 cursor-pointer hover:border-blue-500/50 transition group"
+            className="bg-slate-900 border border-slate-800 hover:border-blue-500/50 p-4 rounded-2xl space-y-1.5 cursor-pointer transition group"
           >
             <div className="flex items-center justify-between text-blue-400">
               <Car size={18} />
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-500/10 px-2 py-0.5 rounded">
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-950/60 text-blue-400 border border-blue-800/60 px-2 py-0.5 rounded">
                 Anti-Rust
               </span>
             </div>
-            <h4 className="text-sm font-bold text-white dark:text-white text-slate-900 group-hover:text-blue-300 transition">
+            <h4 className="text-sm font-bold text-white group-hover:text-blue-300 transition">
               Silencer & Underbody
             </h4>
-            <p className="text-2xl font-extrabold text-blue-400 font-mono">
+            <p className="text-2xl font-extrabold text-white font-mono">
               {serviceStats.silencerUnderbody} <span className="text-xs font-normal text-slate-400">Cars</span>
             </p>
             <p className="text-[11px] text-slate-400">Thermal zinc & bitumen coating</p>
@@ -322,18 +318,18 @@ export default function DashboardView({
 
           <div
             onClick={() => onNavigateTab('updates')}
-            className="bg-slate-900/60 dark:bg-slate-900/60 bg-white border border-slate-800 dark:border-slate-800 border-slate-200 p-4 rounded-2xl space-y-1.5 cursor-pointer hover:border-cyan-500/50 transition group"
+            className="bg-slate-900 border border-slate-800 hover:border-blue-500/50 p-4 rounded-2xl space-y-1.5 cursor-pointer transition group"
           >
-            <div className="flex items-center justify-between text-cyan-400">
+            <div className="flex items-center justify-between text-blue-400">
               <Droplets size={18} />
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-cyan-500/10 px-2 py-0.5 rounded">
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-950/60 text-blue-400 border border-blue-800/60 px-2 py-0.5 rounded">
                 Live Bay
               </span>
             </div>
-            <h4 className="text-sm font-bold text-white dark:text-white text-slate-900 group-hover:text-cyan-300 transition">
+            <h4 className="text-sm font-bold text-white group-hover:text-blue-300 transition">
               Washes & Detailing
             </h4>
-            <p className="text-2xl font-extrabold text-cyan-400 font-mono">
+            <p className="text-2xl font-extrabold text-white font-mono">
               {serviceJobs.length || serviceStats.washes} <span className="text-xs font-normal text-slate-400">Vehicles</span>
             </p>
             <p className="text-[11px] text-slate-400">Live bay tracking & WhatsApp status</p>

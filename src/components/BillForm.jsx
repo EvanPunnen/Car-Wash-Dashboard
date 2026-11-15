@@ -161,7 +161,7 @@ export default function BillForm({
             type="button"
             onClick={onSave}
             disabled={isSaving}
-            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition shadow-lg shadow-blue-600/20 active:scale-95"
+            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition shadow-md shadow-blue-900/30 active:scale-95"
           >
             <Save size={15} />
             <span>{isSaving ? 'Saving...' : 'Save Bill'}</span>
@@ -170,27 +170,27 @@ export default function BillForm({
           <button
             type="button"
             onClick={onPreview}
-            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold text-xs shadow-md shadow-blue-500/20 transition active:scale-95"
+            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-slate-700/80 hover:border-blue-500/50 font-semibold text-xs transition active:scale-95"
             title="View standard A4 invoice"
           >
-            <Eye size={15} />
+            <Eye size={15} className="text-blue-400" />
             <span>View A4</span>
-            <ArrowRight size={14} />
+            <ArrowRight size={14} className="text-slate-400" />
           </button>
 
           <button
             type="button"
             onClick={onDownloadPDF}
-            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 font-semibold text-xs transition active:scale-95"
+            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-slate-700/80 hover:border-blue-500/50 font-semibold text-xs transition active:scale-95"
           >
-            <FileDown size={15} />
+            <FileDown size={15} className="text-blue-400" />
             <span>Get PDF</span>
           </button>
 
           <button
             type="button"
             onClick={onShareWhatsApp}
-            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-green-600 hover:bg-green-500 text-white font-semibold text-xs transition shadow-lg shadow-green-600/20 active:scale-95"
+            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition shadow-md shadow-emerald-950/40 active:scale-95"
           >
             <Share2 size={15} />
             <span>WhatsApp</span>
@@ -488,7 +488,7 @@ export default function BillForm({
           <button
             type="button"
             onClick={() => setIsQuickModalOpen(true)}
-            className="py-2 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-md shadow-blue-500/10"
+            className="py-2 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-sm active:scale-95"
           >
             <Sparkles size={14} /> Quick Packages List
           </button>
@@ -714,10 +714,10 @@ export default function BillForm({
                 onSave();
                 onPreview();
               }}
-              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-xs font-extrabold transition shadow-lg shadow-blue-600/30 active:scale-95 flex items-center gap-2"
+              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition shadow-lg shadow-blue-900/40 active:scale-95 flex items-center gap-2"
             >
               <span>View A4 Bill</span>
-              <ArrowRight size={16} />
+              <ArrowRight size={15} />
             </button>
           </div>
         </div>

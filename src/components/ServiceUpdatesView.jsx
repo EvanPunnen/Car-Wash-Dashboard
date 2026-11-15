@@ -251,21 +251,21 @@ export default function ServiceUpdatesView({
   return (
     <div className="space-y-6 pb-24 max-w-6xl mx-auto animate-fadeIn select-none">
       {/* 1. TOP HEADER & INTAKE ACTION */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-gradient-to-r from-blue-900/40 via-slate-900/60 to-purple-900/40 p-5 rounded-2xl border border-blue-500/30 shadow-xl">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg">
         <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
-              <Droplets size={20} />
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-blue-600/15 text-blue-400 border border-blue-500/20 flex items-center justify-center">
+              <Droplets size={18} />
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-black text-white tracking-tight flex items-center gap-2">
+              <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight flex items-center gap-2">
                 Live Car Service Updates
-                <span className="text-xs bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-full font-mono font-bold">
+                <span className="text-xs bg-blue-950/80 text-blue-400 border border-blue-800/60 px-2 py-0.5 rounded-full font-mono font-bold">
                   {jobs.length} Active
                 </span>
               </h2>
               <p className="text-xs text-slate-400">
-                Send 1-tap WhatsApp progress alerts, upload inspection photos & auto-create bills
+                1-tap WhatsApp progress alerts, inspection photos & automatic invoice generation
               </p>
             </div>
           </div>
@@ -273,7 +273,7 @@ export default function ServiceUpdatesView({
 
         <button
           onClick={() => handleOpenIntakeModal()}
-          className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-xs font-bold shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 active:scale-95 transition"
+          className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-md shadow-blue-950/50 flex items-center justify-center gap-2 active:scale-95 transition"
         >
           <Plus size={16} />
           <span>Intake New Vehicle</span>
@@ -316,30 +316,22 @@ export default function ServiceUpdatesView({
           return (
             <div
               key={job.id}
-              className={`rounded-2xl border p-4 sm:p-5 shadow-xl transition space-y-4 ${
-                isFinished
-                  ? 'bg-gradient-to-b from-slate-900/90 to-emerald-950/20 border-emerald-500/40'
-                  : isCoating
-                  ? 'bg-gradient-to-b from-slate-900/90 to-purple-950/20 border-purple-500/40'
-                  : 'bg-slate-900/80 border-slate-800'
-              }`}
+              className="bg-slate-900 border border-slate-800 hover:border-slate-700/80 rounded-2xl p-4 sm:p-5 shadow-lg transition space-y-4"
             >
               {/* Job Header: Customer, Vehicle, Call, WhatsApp */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3.5">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-black text-base text-white tracking-tight">
+                    <span className="font-extrabold text-base text-white tracking-tight">
                       {job.titlePrefix || 'Mr:'} {job.customerName}
                     </span>
-                    <span className="text-xs bg-amber-500/15 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded font-mono font-bold tracking-wider">
+                    <span className="text-xs bg-slate-950 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded font-mono font-bold tracking-wider">
                       {job.vehicleNumber}
                     </span>
-                    <span className="text-xs text-slate-300 font-semibold">
+                    <span className="text-xs text-slate-300 font-medium">
                       {job.vehicleMake}
                     </span>
-                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
-                      isCoating ? 'bg-purple-500/20 text-purple-300' : 'bg-cyan-500/20 text-cyan-300'
-                    }`}>
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-950/60 text-blue-400 border border-blue-800/60">
                       {isCoating ? 'Coating & PPF' : 'Wash & Detail'}
                     </span>
                   </div>
@@ -359,10 +351,10 @@ export default function ServiceUpdatesView({
                   {job.customerPhone && (
                     <a
                       href={`tel:${job.customerPhone}`}
-                      className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 text-xs font-bold flex items-center gap-1.5 transition active:scale-95"
+                      className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-white border border-slate-800 hover:border-slate-700 text-xs font-semibold flex items-center gap-1.5 transition active:scale-95"
                       title={`Call ${job.customerName}`}
                     >
-                      <Phone size={14} />
+                      <Phone size={14} className="text-emerald-400" />
                       <span className="hidden sm:inline">Call</span>
                     </a>
                   )}
@@ -370,7 +362,7 @@ export default function ServiceUpdatesView({
                   {/* 1-Tap Send WhatsApp Status Update */}
                   <button
                     onClick={() => handleSendWhatsAppUpdate(job)}
-                    className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-600/30 transition active:scale-95"
+                    className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm active:scale-95 transition"
                     title="Send WhatsApp Live Status Message to Customer"
                   >
                     <Share2 size={14} />
@@ -380,7 +372,7 @@ export default function ServiceUpdatesView({
                   {/* 1-Tap Bill Generation Button */}
                   <button
                     onClick={() => onGenerateBillFromJob(job)}
-                    className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-600/30 transition active:scale-95"
+                    className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm active:scale-95 transition"
                     title="Generate official A4 bill from this vehicle's data"
                   >
                     <FileText size={14} />
@@ -640,13 +632,14 @@ export default function ServiceUpdatesView({
                       setServiceCategory('wash');
                       setServiceType('Premium Foam Wash & Steam Clean');
                     }}
-                    className={`py-2 px-3 rounded-xl border text-center font-bold transition ${
+                    className={`py-2 px-3 rounded-xl border text-center font-bold text-xs flex items-center justify-center gap-1.5 transition ${
                       serviceCategory === 'wash'
-                        ? 'bg-blue-600 text-white border-blue-500 shadow-md'
-                        : 'bg-slate-950 text-slate-400 border-slate-800'
+                        ? 'bg-blue-600 text-white border-blue-500 shadow-sm'
+                        : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
                     }`}
                   >
-                    🧼 Car Wash Bay
+                    <Droplets size={14} />
+                    <span>Car Wash Bay</span>
                   </button>
                   <button
                     type="button"
@@ -654,13 +647,14 @@ export default function ServiceUpdatesView({
                       setServiceCategory('coating');
                       setServiceType('Borophine 9H Ceramic Coating (3 Year)');
                     }}
-                    className={`py-2 px-3 rounded-xl border text-center font-bold transition ${
+                    className={`py-2 px-3 rounded-xl border text-center font-bold text-xs flex items-center justify-center gap-1.5 transition ${
                       serviceCategory === 'coating'
-                        ? 'bg-purple-600 text-white border-purple-500 shadow-md'
-                        : 'bg-slate-950 text-slate-400 border-slate-800'
+                        ? 'bg-blue-600 text-white border-blue-500 shadow-sm'
+                        : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
                     }`}
                   >
-                    🛡️ Coating / PPF Bay
+                    <ShieldCheck size={14} />
+                    <span>Coating & PPF Bay</span>
                   </button>
                 </div>
               </div>
@@ -754,7 +748,7 @@ export default function ServiceUpdatesView({
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold shadow-lg shadow-blue-500/30 transition"
+                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-950/50 transition active:scale-95"
                 >
                   {editingJob ? 'Update Job Card' : 'Save & Start Intake'}
                 </button>

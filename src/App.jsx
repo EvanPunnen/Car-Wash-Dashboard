@@ -469,10 +469,10 @@ export default function App() {
             {/* ADD TO MOBILE BUTTON (PWA, APK & QR Scan) */}
             <button
               onClick={() => setIsMobileModalOpen(true)}
-              className="flex items-center justify-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-xs font-bold transition shadow-md shadow-blue-500/20 active:scale-95 flex-shrink-0"
+              className="flex items-center justify-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold border border-slate-700/80 hover:border-blue-500/50 transition shadow-sm active:scale-95 flex-shrink-0"
               title="Add to Mobile (APK / PWA / QR Code)"
             >
-              <Smartphone size={16} className="text-blue-100" />
+              <Smartphone size={15} className="text-blue-400" />
               <span className="hidden sm:inline">Add to Mobile</span>
             </button>
 
@@ -924,10 +924,10 @@ export default function App() {
               }
             }}
             disabled={isDownloading}
-            className={`flex flex-col items-center justify-center -mt-4 w-12 h-12 rounded-full shadow-xl border-2 border-slate-900 active:scale-95 transition ${
+            className={`flex flex-col items-center justify-center -mt-4 w-12 h-12 rounded-full shadow-lg border border-slate-700/80 active:scale-95 transition ${
               activeTab === 'preview'
-                ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/40 ring-2 ring-emerald-400/40'
-                : 'bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white shadow-blue-600/40 ring-2 ring-blue-500/30'
+                ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-950/60 ring-2 ring-emerald-500/30'
+                : 'bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white shadow-blue-950/60 ring-2 ring-blue-500/30'
             }`}
             title={activeTab === 'preview' ? "Download PDF Invoice" : "View Live A4 Invoice"}
           >
@@ -937,20 +937,20 @@ export default function App() {
           <button
             onClick={() => setActiveTab('updates')}
             className={`flex flex-col items-center py-1 px-1 transition relative ${
-              activeTab === 'updates' ? 'text-cyan-400 font-bold' : 'text-slate-400'
+              activeTab === 'updates' ? 'text-blue-500 font-bold' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             <Droplets size={17} />
             <span className="text-[9px] mt-0.5">Updates</span>
             {serviceJobs.length > 0 && (
-              <span className="absolute top-0 right-1 w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              <span className="absolute top-0 right-1 w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
             )}
           </button>
 
           <button
             onClick={() => setActiveTab('coatings')}
             className={`flex flex-col items-center py-1 px-1 transition ${
-              activeTab === 'coatings' ? 'text-purple-400 font-bold' : 'text-slate-400'
+              activeTab === 'coatings' ? 'text-blue-500 font-bold' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             <ShieldCheck size={17} />
@@ -960,7 +960,7 @@ export default function App() {
           <button
             onClick={() => setActiveTab('customers')}
             className={`flex flex-col items-center py-1 px-1 transition ${
-              activeTab === 'customers' ? 'text-blue-500 font-bold' : 'text-slate-400'
+              activeTab === 'customers' ? 'text-blue-500 font-bold' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             <Users size={17} />
