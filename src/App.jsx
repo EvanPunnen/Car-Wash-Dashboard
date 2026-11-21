@@ -861,29 +861,29 @@ export default function App() {
         {activeTab === 'preview' && (
           <div className="space-y-4 animate-fadeIn max-w-3xl mx-auto">
             {/* Preview Toolbar */}
-            <div className={`p-3 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-xl sticky top-14 z-20 backdrop-blur-md border ${
-              isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-slate-200'
+            <div className={`p-3 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-sm sticky top-14 z-20 backdrop-blur-md border ${
+              isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-neutral-300'
             }`}>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setActiveTab('form')}
-                  className="px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1 transition"
+                  className="px-3 py-1.5 rounded-xl bg-neutral-100 text-black hover:bg-neutral-200 border border-neutral-300 text-xs font-bold flex items-center gap-1 transition"
                 >
                   <ChevronLeft size={14} /> Back to Edit
                 </button>
-                <span className="text-xs text-slate-400 font-mono hidden sm:inline">
+                <span className="text-xs text-black font-mono font-bold hidden sm:inline">
                   {currentBill.vehicleNumber || 'Invoice Preview'}
                 </span>
               </div>
 
               {/* Zoom Controls */}
-              <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
+              <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl border border-neutral-300">
                 <button
                   onClick={() => {
                     setIsAutoFit(false);
                     setZoomScale(s => Math.max(0.3, s - 0.08));
                   }}
-                  className="p-1.5 text-slate-400 hover:text-white rounded-lg transition"
+                  className="p-1.5 text-neutral-600 hover:text-black rounded-lg transition"
                   title="Zoom Out"
                 >
                   <ZoomOut size={14} />
@@ -896,8 +896,8 @@ export default function App() {
                       setZoomScale(Math.min(1.0, Math.max(0.35, containerWidth / 794)));
                     }
                   }}
-                  className={`px-2 py-1 text-[11px] font-semibold rounded-lg transition ${
-                    isAutoFit ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
+                  className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition ${
+                    isAutoFit ? 'bg-black text-white shadow-sm' : 'text-neutral-600 hover:text-black'
                   }`}
                   title="Fit to screen"
                 >
@@ -908,10 +908,10 @@ export default function App() {
                     setIsAutoFit(false);
                     setZoomScale(1.0);
                   }}
-                  className={`px-2 py-1 text-[11px] font-semibold rounded-lg transition ${
+                  className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition ${
                     !isAutoFit && Math.abs(zoomScale - 1.0) < 0.05
-                      ? 'bg-blue-600 text-white'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-black text-white shadow-sm'
+                      : 'text-neutral-600 hover:text-black'
                   }`}
                   title="100% Original Size"
                 >
@@ -922,7 +922,7 @@ export default function App() {
                     setIsAutoFit(false);
                     setZoomScale(s => Math.min(1.5, s + 0.08));
                   }}
-                  className="p-1.5 text-slate-400 hover:text-white rounded-lg transition"
+                  className="p-1.5 text-neutral-600 hover:text-black rounded-lg transition"
                   title="Zoom In"
                 >
                   <ZoomIn size={14} />
@@ -934,7 +934,7 @@ export default function App() {
                 <button
                   onClick={() => handleDownloadPDF(currentBill)}
                   disabled={isDownloading}
-                  className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-lg shadow-emerald-600/20 active:scale-95"
+                  className="px-3.5 py-2 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-sm active:scale-95"
                 >
                   <Download size={14} />
                   <span>{isDownloading ? 'Generating...' : 'Download PDF'}</span>
@@ -942,7 +942,7 @@ export default function App() {
 
                 <button
                   onClick={handlePrint}
-                  className="px-3 py-2 rounded-xl bg-slate-800 text-slate-200 text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition"
+                  className="px-3 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-black text-xs font-bold flex items-center gap-1.5 border border-neutral-300 transition"
                   title="Print or Save as PDF"
                 >
                   <Printer size={14} />
@@ -950,7 +950,7 @@ export default function App() {
 
                 <button
                   onClick={() => handleShareWhatsApp(currentBill)}
-                  className="px-3 py-2 rounded-xl bg-green-600 hover:bg-green-500 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-lg shadow-green-600/20"
+                  className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-sm"
                   title="Share invoice on WhatsApp"
                 >
                   <Share2 size={14} />
@@ -961,7 +961,7 @@ export default function App() {
             {/* A4 Sheet Viewport */}
             <div
               ref={previewContainerRef}
-              className="w-full overflow-x-auto pb-6 flex justify-center py-4 bg-slate-900/40 rounded-2xl border border-slate-800/80 shadow-inner"
+              className="w-full overflow-x-auto pb-6 flex justify-center py-4 bg-neutral-200/60 rounded-2xl border border-neutral-300 shadow-inner"
             >
               <div
                 style={{

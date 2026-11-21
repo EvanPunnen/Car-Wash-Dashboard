@@ -43,7 +43,7 @@ export default function CoatingsTrackerView({
       else if (selectedFilter === 'Wash' && (descLower.includes('wash') || descLower.includes('clean'))) matched = true;
 
       if (matched) {
-        // Compute warranty inspection due (e.g. 3 months after service date)
+        // Compute warranty inspection due (3 months after service date)
         const sDate = new Date(bill.date || Date.now());
         const inspectionDate = new Date(sDate);
         inspectionDate.setMonth(inspectionDate.getMonth() + 3);
@@ -102,36 +102,37 @@ This is a courtesy check for your *${vs.vehicleMake} (${vs.vehicleNumber})* whic
   };
 
   return (
-    <div className="space-y-6 pb-24 max-w-4xl mx-auto animate-fadeIn">
-      {/* 1. HEADER BANNER */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-lg space-y-2">
-        <div className="flex items-center gap-2 text-blue-400">
-          <ShieldCheck size={22} />
-          <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
+    <div className="space-y-5 pb-24 max-w-4xl mx-auto animate-fadeIn text-neutral-900">
+      
+      {/* 🌟 1. HEADER BANNER (White & Black) */}
+      <div className="bg-white border border-neutral-300 rounded-2xl p-5 shadow-sm space-y-2">
+        <div className="flex items-center gap-2 text-black">
+          <ShieldCheck size={22} className="text-black" />
+          <h2 className="text-base sm:text-lg font-black text-black tracking-tight uppercase">
             Coatings & Service Follow-up Tracker
           </h2>
         </div>
-        <p className="text-xs text-slate-400 max-w-2xl leading-relaxed">
+        <p className="text-xs text-neutral-500 max-w-2xl leading-relaxed font-medium">
           Filter every vehicle that completed Borophine Coating, Ceramic 9H/10H, PPF, or Sun Film. Track warranty checkups, customer numbers, and call owners directly with 1 tap.
         </p>
       </div>
 
-      {/* 2. FILTER CHIPS & SEARCH */}
-      <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg space-y-3">
+      {/* 🌟 2. FILTER CHIPS & SEARCH (White & Black) */}
+      <div className="bg-white border border-neutral-300 p-4 rounded-2xl shadow-sm space-y-3">
         {/* Search */}
         <div className="relative">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
           <input
             type="text"
             placeholder="Search by car reg number (e.g. KL 05), customer, phone, model..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+            className="w-full bg-white border border-neutral-300 rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-black placeholder-neutral-400 focus:outline-none focus:border-black font-medium"
           />
           {searchTerm && (
             <button
               onClick={() => setSearchTerm('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-neutral-400 hover:text-black font-bold"
             >
               Clear
             </button>
@@ -144,10 +145,10 @@ This is a courtesy check for your *${vs.vehicleMake} (${vs.vehicleNumber})* whic
             <button
               key={chip.id}
               onClick={() => setSelectedFilter(chip.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition ${
                 selectedFilter === chip.id
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                  ? 'bg-black text-white shadow-sm'
+                  : 'bg-neutral-100 text-neutral-700 hover:text-black border border-neutral-300'
               }`}
             >
               {chip.label}
@@ -155,73 +156,73 @@ This is a courtesy check for your *${vs.vehicleMake} (${vs.vehicleNumber})* whic
           ))}
         </div>
 
-        <div className="flex items-center justify-between text-xs text-slate-400 pt-1">
+        <div className="flex items-center justify-between text-xs text-neutral-500 pt-1 font-bold">
           <span>
-            Found <strong className="text-white font-mono">{filteredList.length}</strong> matching vehicle records
+            Found <strong className="text-black font-mono">{filteredList.length}</strong> matching vehicle records
           </span>
-          <span className="text-[11px] text-blue-400 font-medium">
+          <span className="text-[11px] text-black">
             Active Filter: {selectedFilter}
           </span>
         </div>
       </div>
 
-      {/* 3. VEHICLE COATINGS LIST */}
+      {/* 🌟 3. VEHICLE COATINGS LIST (White & Black) */}
       <div className="space-y-3">
         {filteredList.map((record) => (
           <div
             key={record.id}
-            className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3.5 hover:border-slate-700 transition group"
+            className="bg-white border border-neutral-300 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3.5 hover:border-black transition group"
           >
             {/* Card Header: Vehicle Plate & Service Badge */}
             <div className="flex items-start justify-between gap-3 flex-wrap">
               <div className="flex items-center gap-2 flex-wrap">
                 {/* Number Plate Badge */}
-                <span className="px-2.5 py-1 rounded-lg bg-slate-950 text-amber-400 border border-amber-500/30 text-xs sm:text-sm font-mono font-bold uppercase tracking-wider">
+                <span className="px-2.5 py-1 rounded-lg bg-neutral-100 text-black border border-neutral-300 text-xs sm:text-sm font-mono font-bold uppercase tracking-wider">
                   {record.vehicleNumber}
                 </span>
 
-                <span className="font-bold text-sm text-white">
+                <span className="font-extrabold text-sm text-black">
                   {record.vehicleMake}
                 </span>
 
-                <span className="text-xs text-blue-400 bg-blue-950/60 border border-blue-800/60 px-2.5 py-0.5 rounded-md font-semibold">
+                <span className="text-xs text-black bg-neutral-100 border border-neutral-300 px-2.5 py-0.5 rounded-md font-bold">
                   {record.serviceName}
                 </span>
               </div>
 
               <div className="text-right">
-                <span className="text-sm sm:text-base font-extrabold text-white font-mono">
+                <span className="text-sm sm:text-base font-black text-black font-mono">
                   ₹{formatCurrency(record.amount)}
                 </span>
               </div>
             </div>
 
             {/* Customer Details Row */}
-            <div className="flex items-center justify-between text-xs text-slate-400 flex-wrap gap-2 pt-1 border-t border-slate-800/80">
+            <div className="flex items-center justify-between text-xs text-neutral-600 flex-wrap gap-2 pt-1 border-t border-neutral-200">
               <div className="flex items-center gap-4 flex-wrap">
-                <span className="text-slate-200 font-semibold">
+                <span className="text-black font-bold">
                   Customer: {record.customerName}
                 </span>
-                <span className="font-mono flex items-center gap-1.5">
-                  <Phone size={12} className="text-blue-400" /> {record.customerPhone || 'No Phone'}
+                <span className="font-mono flex items-center gap-1.5 font-bold text-neutral-800">
+                  <Phone size={12} className="text-black" /> {record.customerPhone || 'No Phone'}
                 </span>
-                <span className="flex items-center gap-1">
-                  <Calendar size={13} className="text-slate-500" /> Done on {record.displayDate}
+                <span className="flex items-center gap-1 font-medium">
+                  <Calendar size={13} className="text-neutral-400" /> Done on {record.displayDate}
                 </span>
               </div>
 
               {/* Warranty Checkup Tag */}
               {record.warrantyNote && (
-                <div className="text-[11px] text-amber-300 bg-slate-950 border border-amber-500/20 px-2 py-0.5 rounded flex items-center gap-1">
+                <div className="text-[11px] text-neutral-800 bg-neutral-100 border border-neutral-300 px-2.5 py-0.5 rounded-md flex items-center gap-1 font-bold">
                   <Clock size={12} />
                   <span>Recoating Check: {record.inspectionDueStr}</span>
                 </div>
               )}
             </div>
 
-            {/* ACTION BUTTONS WITH DIRECT 1-TAP CALL BUTTON (User specifically requested) */}
-            <div className="flex items-center justify-between pt-2 border-t border-slate-800/60 flex-wrap gap-2">
-              <div className="text-[11px] text-slate-500 italic truncate max-w-sm">
+            {/* ACTION BUTTONS (White & Black) */}
+            <div className="flex items-center justify-between pt-2 border-t border-neutral-200 flex-wrap gap-2">
+              <div className="text-[11px] text-neutral-500 italic truncate max-w-sm font-medium">
                 {record.warrantyNote || 'Standard warranty terms applicable.'}
               </div>
 
@@ -230,15 +231,15 @@ This is a courtesy check for your *${vs.vehicleMake} (${vs.vehicleNumber})* whic
                 {record.customerPhone ? (
                   <a
                     href={`tel:${record.customerPhone}`}
-                    className="px-3.5 py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white border border-slate-800 hover:border-slate-700 text-xs font-semibold flex items-center gap-1.5 transition shadow-sm active:scale-95"
+                    className="px-3.5 py-1.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-black border border-neutral-300 text-xs font-bold flex items-center gap-1.5 transition shadow-sm active:scale-95"
                     title={`Call ${record.customerName}`}
                   >
-                    <Phone size={14} className="text-emerald-400" /> Call Owner
+                    <Phone size={14} className="text-black" /> Call Owner
                   </a>
                 ) : (
                   <button
                     disabled
-                    className="px-3.5 py-1.5 rounded-xl bg-slate-800 text-slate-500 text-xs font-semibold cursor-not-allowed"
+                    className="px-3.5 py-1.5 rounded-xl bg-neutral-100 text-neutral-400 border border-neutral-200 text-xs font-semibold cursor-not-allowed"
                   >
                     No Phone
                   </button>
@@ -248,7 +249,7 @@ This is a courtesy check for your *${vs.vehicleMake} (${vs.vehicleNumber})* whic
                 <button
                   type="button"
                   onClick={() => handleFollowupWhatsApp(record)}
-                  className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-sm active:scale-95"
+                  className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-sm active:scale-95"
                   title="Send WhatsApp Warranty Reminder"
                 >
                   <Share2 size={14} /> WhatsApp
@@ -258,7 +259,7 @@ This is a courtesy check for your *${vs.vehicleMake} (${vs.vehicleNumber})* whic
                 <button
                   type="button"
                   onClick={() => onSelectBillForPreview(record.bill)}
-                  className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition"
+                  className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-black border border-neutral-300 transition"
                   title="View original invoice"
                 >
                   <Eye size={15} />
@@ -269,8 +270,8 @@ This is a courtesy check for your *${vs.vehicleMake} (${vs.vehicleNumber})* whic
         ))}
 
         {filteredList.length === 0 && (
-          <div className="text-center py-12 bg-slate-900/40 border border-dashed border-slate-800 rounded-2xl p-6">
-            <p className="text-slate-400 text-sm">
+          <div className="text-center py-12 bg-white border border-dashed border-neutral-300 rounded-2xl p-6 shadow-sm">
+            <p className="text-neutral-500 text-sm">
               No vehicles found matching the filter "{selectedFilter}".
             </p>
           </div>

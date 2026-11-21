@@ -98,7 +98,7 @@ export default function ServiceUpdatesView({
     }
   };
 
-  // Compress and handle photo upload
+  // Upload Photo handler
   const handlePhotoUpload = (e) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
@@ -109,10 +109,9 @@ export default function ServiceUpdatesView({
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement('canvas');
-          const maxDim = 1000;
+          const maxDim = 900;
           let width = img.width;
           let height = img.height;
-
           if (width > height && width > maxDim) {
             height = Math.round((height * maxDim) / width);
             width = maxDim;
@@ -120,18 +119,17 @@ export default function ServiceUpdatesView({
             width = Math.round((width * maxDim) / height);
             height = maxDim;
           }
-
           canvas.width = width;
           canvas.height = height;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
-          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          const compressed = canvas.toDataURL('image/jpeg', 0.65);
 
           setJobPhotos(prev => [
             ...prev,
             {
-              id: `photo-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-              url: compressedDataUrl,
+              id: `photo-${Date.now()}-${Math.random().toString(36).substring(7)}`,
+              url: compressed,
               timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
               tag: 'Intake'
             }
@@ -250,22 +248,23 @@ export default function ServiceUpdatesView({
   };
 
   return (
-    <div className="space-y-6 pb-24 max-w-6xl mx-auto animate-fadeIn select-none">
-      {/* 1. TOP HEADER & INTAKE ACTION */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg">
+    <div className="space-y-5 pb-24 max-w-6xl mx-auto animate-fadeIn select-none text-neutral-900">
+      
+      {/* 🌟 1. TOP HEADER & INTAKE ACTION (White & Black) */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white border border-neutral-300 p-5 rounded-2xl shadow-sm">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-blue-600/15 text-blue-400 border border-blue-500/20 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-2xl bg-neutral-100 border border-neutral-300 text-black flex items-center justify-center">
               <Droplets size={18} />
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              <h2 className="text-lg sm:text-xl font-black text-black tracking-tight flex items-center gap-2 uppercase">
                 Live Car Service Updates
-                <span className="text-xs bg-blue-950/80 text-blue-400 border border-blue-800/60 px-2 py-0.5 rounded-full font-mono font-bold">
+                <span className="text-xs bg-black text-white px-2 py-0.5 rounded-full font-mono font-bold">
                   {jobs.length} Active
                 </span>
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-neutral-500 font-medium">
                 1-tap WhatsApp progress alerts, inspection photos & automatic invoice generation
               </p>
             </div>
@@ -275,20 +274,20 @@ export default function ServiceUpdatesView({
         {!isGuest ? (
           <button
             onClick={() => handleOpenIntakeModal()}
-            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-md shadow-blue-950/50 flex items-center justify-center gap-2 active:scale-95 transition"
+            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-black shadow-sm flex items-center justify-center gap-2 active:scale-95 transition"
           >
             <Plus size={16} />
             <span>Intake New Vehicle</span>
           </button>
         ) : (
-          <div className="px-3.5 py-2 rounded-xl bg-amber-950/40 border border-amber-800/60 text-amber-300 text-xs font-semibold flex items-center gap-1.5">
+          <div className="px-3.5 py-2 rounded-xl bg-neutral-100 border border-neutral-300 text-neutral-700 text-xs font-bold flex items-center gap-1.5">
             <Eye size={14} />
             <span>Guest View Only</span>
           </div>
         )}
       </div>
 
-      {/* 2. CATEGORY FILTER TABS */}
+      {/* 🌟 2. CATEGORY FILTER TABS (White & Black) */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none text-xs font-bold">
         {[
           { id: 'all', label: `All Vehicles (${jobs.length})` },
@@ -299,10 +298,10 @@ export default function ServiceUpdatesView({
           <button
             key={tab.id}
             onClick={() => setFilterCategory(tab.id)}
-            className={`px-3.5 py-2 rounded-xl transition whitespace-nowrap flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-xl transition whitespace-nowrap flex items-center gap-1.5 font-bold ${
               filterCategory === tab.id
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-slate-900/60 text-slate-400 hover:text-slate-200 border border-slate-800'
+                ? 'bg-black text-white shadow-sm'
+                : 'bg-white text-neutral-700 hover:text-black border border-neutral-300'
             }`}
           >
             {tab.label}
@@ -310,7 +309,7 @@ export default function ServiceUpdatesView({
         ))}
       </div>
 
-      {/* 3. ACTIVE JOB CARDS LIST */}
+      {/* 🌟 3. ACTIVE JOB CARDS LIST (White & Black) */}
       <div className="grid grid-cols-1 gap-4">
         {filteredJobs.map(job => {
           const isCoating = (job.serviceCategory || '').toLowerCase() === 'coating' || 
@@ -324,31 +323,31 @@ export default function ServiceUpdatesView({
           return (
             <div
               key={job.id}
-              className="bg-slate-900 border border-slate-800 hover:border-slate-700/80 rounded-2xl p-4 sm:p-5 shadow-lg transition space-y-4"
+              className="bg-white border border-neutral-300 hover:border-black rounded-2xl p-4 sm:p-5 shadow-sm transition space-y-4"
             >
               {/* Job Header: Customer, Vehicle, Call, WhatsApp */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3.5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-200 pb-3.5">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-extrabold text-base text-white tracking-tight">
+                    <span className="font-black text-base text-black tracking-tight">
                       {job.titlePrefix || 'Mr:'} {job.customerName}
                     </span>
-                    <span className="text-xs bg-slate-950 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded font-mono font-bold tracking-wider">
+                    <span className="text-xs bg-neutral-100 text-black border border-neutral-300 px-2 py-0.5 rounded font-mono font-bold tracking-wider">
                       {job.vehicleNumber}
                     </span>
-                    <span className="text-xs text-slate-300 font-medium">
+                    <span className="text-xs text-neutral-600 font-bold">
                       {job.vehicleMake}
                     </span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-950/60 text-blue-400 border border-blue-800/60">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-black text-white font-mono">
                       {isCoating ? 'Coating & PPF' : 'Wash & Detail'}
                     </span>
                   </div>
 
-                  <p className="text-xs text-slate-400 flex items-center gap-2">
-                    <span className="text-slate-200 font-medium">{job.serviceType}</span>
+                  <p className="text-xs text-neutral-600 flex items-center gap-2">
+                    <span className="text-black font-bold">{job.serviceType}</span>
                     <span>·</span>
-                    <span className="flex items-center gap-1 text-slate-400">
-                      <Clock size={12} className="text-blue-400" /> Est: {job.estimatedTime || 'Today'}
+                    <span className="flex items-center gap-1 text-neutral-500 font-medium">
+                      <Clock size={12} className="text-black" /> Est: {job.estimatedTime || 'Today'}
                     </span>
                   </p>
                 </div>
@@ -359,10 +358,10 @@ export default function ServiceUpdatesView({
                   {job.customerPhone && (
                     <a
                       href={`tel:${job.customerPhone}`}
-                      className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-white border border-slate-800 hover:border-slate-700 text-xs font-semibold flex items-center gap-1.5 transition active:scale-95"
+                      className="p-2 sm:px-3 sm:py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-black border border-neutral-300 text-xs font-bold flex items-center gap-1.5 transition active:scale-95"
                       title={`Call ${job.customerName}`}
                     >
-                      <Phone size={14} className="text-emerald-400" />
+                      <Phone size={14} className="text-black" />
                       <span className="hidden sm:inline">Call</span>
                     </a>
                   )}
@@ -370,7 +369,7 @@ export default function ServiceUpdatesView({
                   {/* 1-Tap Send WhatsApp Status Update */}
                   <button
                     onClick={() => handleSendWhatsAppUpdate(job)}
-                    className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm active:scale-95 transition"
+                    className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition"
                     title="Send WhatsApp Live Status Message to Customer"
                   >
                     <Share2 size={14} />
@@ -380,7 +379,7 @@ export default function ServiceUpdatesView({
                   {/* 1-Tap Bill Generation Button */}
                   <button
                     onClick={() => onGenerateBillFromJob(job)}
-                    className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm active:scale-95 transition"
+                    className="px-3.5 py-2 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition"
                     title="Generate official A4 bill from this vehicle's data"
                   >
                     <FileText size={14} />
@@ -390,7 +389,7 @@ export default function ServiceUpdatesView({
                   {/* Edit / Remove Job */}
                   <button
                     onClick={() => handleOpenIntakeModal(job)}
-                    className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
+                    className="p-2 px-3 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-black border border-neutral-300 text-xs font-bold transition"
                     title="Edit Job Details"
                   >
                     Edit
@@ -398,7 +397,7 @@ export default function ServiceUpdatesView({
 
                   <button
                     onClick={() => handleDeleteJob(job.id, job.vehicleNumber)}
-                    className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition"
+                    className="p-2 rounded-xl text-neutral-400 hover:text-red-600 hover:bg-red-50 transition border border-transparent hover:border-red-200"
                     title="Delete Job Card"
                   >
                     <Trash2 size={15} />
@@ -409,11 +408,11 @@ export default function ServiceUpdatesView({
               {/* 4. VISUAL STEPPER: PROGRESS STAGES */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-300 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                    Current Stage: <span className="text-white font-bold">{currentStage.label}</span>
+                  <span className="font-bold text-neutral-800 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
+                    Current Stage: <span className="text-black font-black uppercase">{currentStage.label}</span>
                   </span>
-                  <span className="text-[11px] text-slate-400">
+                  <span className="text-[11px] text-neutral-500">
                     Tap any stage below to advance status
                   </span>
                 </div>
@@ -428,31 +427,31 @@ export default function ServiceUpdatesView({
                       <button
                         key={stage.id}
                         onClick={() => handleSetStage(job, idx)}
-                        className={`p-2 rounded-xl border text-left transition flex flex-col justify-between min-h-[58px] sm:min-h-[66px] relative group ${
+                        className={`p-2 sm:p-2.5 rounded-xl border text-left transition flex flex-col justify-between min-h-[58px] sm:min-h-[66px] relative group ${
                           isCurrent
-                            ? 'bg-blue-600/25 border-blue-500 text-white ring-2 ring-blue-500/30'
+                            ? 'bg-black text-white border-black ring-2 ring-neutral-300 shadow-sm'
                             : isDone
-                            ? 'bg-emerald-950/30 border-emerald-500/40 text-emerald-300'
-                            : 'bg-slate-950/60 border-slate-800/80 text-slate-400 hover:border-slate-700'
+                            ? 'bg-neutral-100 border-neutral-300 text-black'
+                            : 'bg-neutral-50 border-neutral-200 text-neutral-400 hover:border-neutral-300'
                         }`}
                       >
                         <div className="flex items-center justify-between w-full">
                           <span className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded ${
                             isCurrent
-                              ? 'bg-blue-500 text-white'
+                              ? 'bg-white text-black'
                               : isDone
-                              ? 'bg-emerald-500 text-white'
-                              : 'bg-slate-800 text-slate-400'
+                              ? 'bg-black text-white'
+                              : 'bg-neutral-200 text-neutral-600'
                           }`}>
                             0{idx + 1}
                           </span>
                           {isDone ? (
-                            <Check size={13} className="text-emerald-400" />
+                            <Check size={13} className="text-black" />
                           ) : isCurrent ? (
-                            <span className="w-2 h-2 rounded-full bg-blue-400 animate-ping" />
+                            <span className="w-2 h-2 rounded-full bg-white animate-ping" />
                           ) : null}
                         </div>
-                        <span className="text-[10px] sm:text-xs font-semibold leading-tight line-clamp-2 mt-1">
+                        <span className="text-[10px] sm:text-xs font-bold leading-tight line-clamp-2 mt-1">
                           {stage.short}
                         </span>
                       </button>
@@ -462,14 +461,14 @@ export default function ServiceUpdatesView({
               </div>
 
               {/* 5. PHOTOS SECTION: Vehicle Inspection Photos */}
-              <div className="bg-slate-950/60 border border-slate-800/80 rounded-xl p-3 space-y-2">
+              <div className="bg-neutral-50 border border-neutral-200 rounded-xl p-3 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                    <Camera size={14} className="text-purple-400" /> Vehicle Photos ({photos.length})
+                  <span className="text-xs font-bold text-neutral-800 flex items-center gap-1.5">
+                    <Camera size={14} className="text-black" /> Vehicle Photos ({photos.length})
                   </span>
 
                   {/* Add Photo Button */}
-                  <label className="cursor-pointer px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1 transition">
+                  <label className="cursor-pointer px-2.5 py-1 rounded-lg bg-neutral-200 hover:bg-neutral-300 text-black text-xs font-bold flex items-center gap-1 transition">
                     <Plus size={13} />
                     <span>Upload Photo</span>
                     <input
@@ -489,17 +488,17 @@ export default function ServiceUpdatesView({
                       <div
                         key={p.id}
                         onClick={() => setSelectedPhotoModal(p)}
-                        className="relative w-16 h-16 rounded-lg overflow-hidden border border-slate-700 cursor-pointer flex-shrink-0 group hover:border-blue-400 transition"
+                        className="relative w-16 h-16 rounded-lg overflow-hidden border border-neutral-300 cursor-pointer flex-shrink-0 group hover:border-black transition shadow-sm"
                       >
                         <img src={p.url} alt="Vehicle Service" className="w-full h-full object-cover" />
-                        <span className="absolute bottom-0 inset-x-0 bg-black/70 text-[8px] text-white text-center font-mono py-0.5 truncate">
+                        <span className="absolute bottom-0 inset-x-0 bg-black/80 text-[8px] text-white text-center font-mono py-0.5 truncate">
                           {p.timestamp}
                         </span>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-[11px] text-slate-400 italic">
+                  <p className="text-[11px] text-neutral-500 italic">
                     No photos uploaded. Tap 'Upload Photo' to attach before/after wash photos.
                   </p>
                 )}
@@ -509,15 +508,15 @@ export default function ServiceUpdatesView({
         })}
 
         {filteredJobs.length === 0 && (
-          <div className="text-center py-12 bg-slate-900/40 rounded-2xl border border-slate-800 space-y-3">
-            <Car size={36} className="mx-auto text-slate-400" />
-            <h3 className="text-base font-bold text-slate-300">No Vehicles in this View</h3>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto">
+          <div className="text-center py-12 bg-white rounded-2xl border border-neutral-300 space-y-3 shadow-sm">
+            <Car size={36} className="mx-auto text-neutral-400" />
+            <h3 className="text-base font-extrabold text-black">No Vehicles in this View</h3>
+            <p className="text-xs text-neutral-500 max-w-sm mx-auto">
               Tap 'Intake New Vehicle' to add a car to the wash or detailing bay and start sending live WhatsApp updates.
             </p>
             <button
               onClick={() => handleOpenIntakeModal()}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition"
+              className="px-4 py-2 bg-black hover:bg-neutral-800 text-white rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition"
             >
               <Plus size={15} /> Intake Vehicle
             </button>
@@ -527,16 +526,16 @@ export default function ServiceUpdatesView({
 
       {/* 4. MODAL: VEHICLE INTAKE & JOB CARD */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4 my-auto animate-scaleUp">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="font-extrabold text-base text-white flex items-center gap-2">
-                <Car size={18} className="text-blue-400" />
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-white border border-neutral-300 w-full max-w-lg rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4 my-auto animate-scaleUp text-neutral-900">
+            <div className="flex items-center justify-between border-b border-neutral-200 pb-3">
+              <h3 className="font-black text-base text-black flex items-center gap-2 uppercase">
+                <Car size={18} className="text-black" />
                 {editingJob ? 'Edit Vehicle Job Card' : 'New Vehicle Intake'}
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+                className="p-1.5 rounded-lg text-neutral-500 hover:text-black hover:bg-neutral-100 transition"
               >
                 <X size={18} />
               </button>
@@ -546,12 +545,12 @@ export default function ServiceUpdatesView({
               {/* Autofill from existing customer */}
               {customers.length > 0 && !editingJob && (
                 <div>
-                  <label className="text-[11px] font-semibold text-slate-400 block mb-1">
+                  <label className="text-[11px] font-bold text-neutral-700 block mb-1">
                     Select Existing Customer (Optional)
                   </label>
                   <select
                     onChange={handleSelectCustomer}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"
+                    className="w-full bg-white border border-neutral-300 rounded-xl px-3 py-2 text-black font-medium"
                   >
                     <option value="">-- Choose Existing Client --</option>
                     {customers.map(c => (
@@ -566,11 +565,11 @@ export default function ServiceUpdatesView({
               {/* Customer Name & Phone */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <div>
-                  <label className="text-[11px] font-semibold text-slate-400 block mb-1">Title</label>
+                  <label className="text-[11px] font-bold text-neutral-700 block mb-1">Title</label>
                   <select
                     value={titlePrefix}
                     onChange={(e) => setTitlePrefix(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-2 text-white"
+                    className="w-full bg-white border border-neutral-300 rounded-xl px-2.5 py-2 text-black font-bold"
                   >
                     <option value="Mr:">Mr:</option>
                     <option value="Mrs:">Mrs:</option>
@@ -580,59 +579,59 @@ export default function ServiceUpdatesView({
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="text-[11px] font-semibold text-slate-400 block mb-1">Customer Name *</label>
+                  <label className="text-[11px] font-bold text-neutral-700 block mb-1">Customer Name *</label>
                   <input
                     type="text"
                     required
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     placeholder="e.g. Evan Punnen"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-medium"
+                    className="w-full bg-white border border-neutral-300 rounded-xl px-3 py-2 text-black font-medium"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-[11px] font-semibold text-slate-400 block mb-1">WhatsApp Phone Number *</label>
+                <label className="text-[11px] font-bold text-neutral-700 block mb-1">WhatsApp Phone Number *</label>
                 <input
                   type="tel"
                   required
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
                   placeholder="e.g. 9495365617"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono"
+                  className="w-full bg-white border border-neutral-300 rounded-xl px-3 py-2 text-black font-mono font-bold"
                 />
               </div>
 
               {/* Vehicle Number & Make */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[11px] font-semibold text-slate-400 block mb-1">Vehicle Reg Number *</label>
+                  <label className="text-[11px] font-bold text-neutral-700 block mb-1">Vehicle Reg Number *</label>
                   <input
                     type="text"
                     required
                     value={vehicleNumber}
                     onChange={(e) => setVehicleNumber(e.target.value.toUpperCase())}
                     placeholder="e.g. KL 05 AZ 4249"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono uppercase"
+                    className="w-full bg-white border border-neutral-300 rounded-xl px-3 py-2 text-black font-mono font-bold uppercase"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-semibold text-slate-400 block mb-1">Make & Model</label>
+                  <label className="text-[11px] font-bold text-neutral-700 block mb-1">Make & Model</label>
                   <input
                     type="text"
                     value={vehicleMake}
                     onChange={(e) => setVehicleMake(e.target.value)}
                     placeholder="e.g. Hyundai Creta"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"
+                    className="w-full bg-white border border-neutral-300 rounded-xl px-3 py-2 text-black font-medium"
                   />
                 </div>
               </div>
 
               {/* Service Category */}
               <div>
-                <label className="text-[11px] font-semibold text-slate-400 block mb-1">Service Bay Category</label>
+                <label className="text-[11px] font-bold text-neutral-700 block mb-1">Service Bay Category</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
@@ -642,8 +641,8 @@ export default function ServiceUpdatesView({
                     }}
                     className={`py-2 px-3 rounded-xl border text-center font-bold text-xs flex items-center justify-center gap-1.5 transition ${
                       serviceCategory === 'wash'
-                        ? 'bg-blue-600 text-white border-blue-500 shadow-sm'
-                        : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
+                        ? 'bg-black text-white border-black shadow-sm'
+                        : 'bg-neutral-100 text-neutral-700 border-neutral-300 hover:text-black'
                     }`}
                   >
                     <Droplets size={14} />
@@ -657,8 +656,8 @@ export default function ServiceUpdatesView({
                     }}
                     className={`py-2 px-3 rounded-xl border text-center font-bold text-xs flex items-center justify-center gap-1.5 transition ${
                       serviceCategory === 'coating'
-                        ? 'bg-blue-600 text-white border-blue-500 shadow-sm'
-                        : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
+                        ? 'bg-black text-white border-black shadow-sm'
+                        : 'bg-neutral-100 text-neutral-700 border-neutral-300 hover:text-black'
                     }`}
                   >
                     <ShieldCheck size={14} />
@@ -669,37 +668,37 @@ export default function ServiceUpdatesView({
 
               {/* Service Type */}
               <div>
-                <label className="text-[11px] font-semibold text-slate-400 block mb-1">Service Description</label>
+                <label className="text-[11px] font-bold text-neutral-700 block mb-1">Service Description</label>
                 <input
                   type="text"
                   value={serviceType}
                   onChange={(e) => setServiceType(e.target.value)}
                   placeholder="e.g. Premium Foam Wash / Ceramic Coating"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-medium"
+                  className="w-full bg-white border border-neutral-300 rounded-xl px-3 py-2 text-black font-medium"
                 />
               </div>
 
               {/* Est Completion & Specialist */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[11px] font-semibold text-slate-400 block mb-1">Estimated Completion</label>
+                  <label className="text-[11px] font-bold text-neutral-700 block mb-1">Estimated Completion</label>
                   <input
                     type="text"
                     value={estimatedTime}
                     onChange={(e) => setEstimatedTime(e.target.value)}
                     placeholder="e.g. Today 6:30 PM"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"
+                    className="w-full bg-white border border-neutral-300 rounded-xl px-3 py-2 text-black font-medium"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-semibold text-slate-400 block mb-1">Assigned Specialist</label>
+                  <label className="text-[11px] font-bold text-neutral-700 block mb-1">Assigned Specialist</label>
                   <input
                     type="text"
                     value={assignedTechnician}
                     onChange={(e) => setAssignedTechnician(e.target.value)}
                     placeholder="e.g. Arun / Detailing Lead"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"
+                    className="w-full bg-white border border-neutral-300 rounded-xl px-3 py-2 text-black font-medium"
                   />
                 </div>
               </div>
@@ -707,11 +706,11 @@ export default function ServiceUpdatesView({
               {/* Photos upload */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-[11px] font-semibold text-slate-400">Intake Inspection Photos</label>
+                  <label className="text-[11px] font-bold text-neutral-700">Intake Inspection Photos</label>
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="text-xs text-blue-400 hover:underline flex items-center gap-1"
+                    className="text-xs text-black font-bold hover:underline flex items-center gap-1"
                   >
                     <Camera size={13} /> + Upload Photo
                   </button>
@@ -728,14 +727,14 @@ export default function ServiceUpdatesView({
                 />
 
                 {jobPhotos.length > 0 && (
-                  <div className="flex items-center gap-2 overflow-x-auto p-2 bg-slate-950 rounded-xl border border-slate-800">
+                  <div className="flex items-center gap-2 overflow-x-auto p-2 bg-neutral-50 rounded-xl border border-neutral-300">
                     {jobPhotos.map(p => (
-                      <div key={p.id} className="relative w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 border border-slate-700">
+                      <div key={p.id} className="relative w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 border border-neutral-300">
                         <img src={p.url} alt="Intake" className="w-full h-full object-cover" />
                         <button
                           type="button"
                           onClick={() => setJobPhotos(prev => prev.filter(x => x.id !== p.id))}
-                          className="absolute top-0 right-0 p-0.5 bg-black/80 text-rose-400 rounded-bl"
+                          className="absolute top-0 right-0 p-0.5 bg-black/80 text-white rounded-bl"
                         >
                           <X size={12} />
                         </button>
@@ -746,17 +745,17 @@ export default function ServiceUpdatesView({
               </div>
 
               {/* Submit Buttons */}
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-neutral-200">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold hover:bg-slate-700 transition"
+                  className="px-4 py-2 rounded-xl bg-neutral-100 border border-neutral-300 text-neutral-700 font-bold hover:bg-neutral-200 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-950/50 transition active:scale-95"
+                  className="px-5 py-2.5 rounded-xl bg-black hover:bg-neutral-800 text-white font-black text-xs shadow-sm transition active:scale-95"
                 >
                   {editingJob ? 'Update Job Card' : 'Save & Start Intake'}
                 </button>
@@ -768,20 +767,20 @@ export default function ServiceUpdatesView({
 
       {/* 5. PHOTO FULL PREVIEW MODAL */}
       {selectedPhotoModal && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="relative max-w-2xl w-full bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-            <div className="flex items-center justify-between p-3 border-b border-slate-800 bg-slate-950">
-              <span className="text-xs font-mono text-slate-300">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="relative max-w-2xl w-full bg-white border border-neutral-300 rounded-2xl overflow-hidden shadow-2xl text-black">
+            <div className="flex items-center justify-between p-3 border-b border-neutral-200 bg-neutral-50">
+              <span className="text-xs font-mono font-bold text-neutral-800">
                 Vehicle Photo · {selectedPhotoModal.timestamp}
               </span>
               <button
                 onClick={() => setSelectedPhotoModal(null)}
-                className="p-1 rounded-lg text-slate-400 hover:text-white"
+                className="p-1 rounded-lg text-neutral-500 hover:text-black"
               >
                 <X size={18} />
               </button>
             </div>
-            <div className="p-2 flex items-center justify-center bg-black max-h-[75vh]">
+            <div className="p-2 flex items-center justify-center bg-neutral-100 max-h-[75vh]">
               <img
                 src={selectedPhotoModal.url}
                 alt="Full Preview"

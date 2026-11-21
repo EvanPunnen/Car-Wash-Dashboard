@@ -33,7 +33,7 @@ export default function AddToMobileModal({
         width: 280,
         margin: 2,
         color: {
-          dark: '#0f172a',
+          dark: '#000000',
           light: '#ffffff'
         }
       })
@@ -62,23 +62,23 @@ export default function AddToMobileModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/85 backdrop-blur-md animate-fadeIn">
-      <div className="bg-slate-900 border border-slate-800 text-slate-100 rounded-3xl max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+      <div className="bg-white border border-neutral-300 text-black rounded-2xl max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl flex flex-col">
         
         {/* 1. MODAL HEADER */}
-        <div className="p-5 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900/95 backdrop-blur-md z-10">
+        <div className="p-5 border-b border-neutral-200 flex items-center justify-between sticky top-0 bg-neutral-50/95 backdrop-blur-md z-10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-blue-600/15 border border-blue-500/25 flex items-center justify-center text-blue-400">
+            <div className="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center shadow-sm">
               <Smartphone size={20} />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
+              <h3 className="text-base font-black text-black flex items-center gap-2">
                 Mobile App & APK
-                <span className="text-[10px] bg-blue-950/80 text-blue-400 border border-blue-800/60 px-2 py-0.5 rounded-full font-bold uppercase font-mono">
+                <span className="text-[10px] bg-neutral-100 text-black border border-neutral-300 px-2 py-0.5 rounded-md font-bold uppercase font-mono">
                   Ready
                 </span>
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-neutral-500 font-medium">
                 Install Mr. DODO on your Android phone or iPhone
               </p>
             </div>
@@ -86,72 +86,72 @@ export default function AddToMobileModal({
 
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition"
+            className="p-2 text-neutral-400 hover:text-black hover:bg-neutral-200 rounded-xl transition"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* 2. BODY CONTENT */}
-        <div className="p-5 space-y-5">
+        <div className="p-5 space-y-5 bg-white">
 
           {/* 🌟 1. IPHONE (iOS) SPECIAL INSTALLATION BANNER */}
           {isIOS ? (
-            <div className="bg-slate-950 border border-indigo-500/30 rounded-2xl p-4 shadow-md space-y-3">
+            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-4 shadow-sm space-y-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-indigo-600/15 border border-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm">
+                <div className="w-9 h-9 rounded-xl bg-black text-white flex items-center justify-center font-bold text-sm shadow-sm">
                   🍎
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm text-white">
+                  <h4 className="font-black text-sm text-black">
                     iPhone (iOS) Installation
                   </h4>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-neutral-500 font-medium">
                     Apple iOS does not use APK files. Install via Safari in 2 steps:
                   </p>
                 </div>
               </div>
 
-              <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-3 space-y-2 text-xs">
+              <div className="bg-white border border-neutral-200 rounded-xl p-3 space-y-2 text-xs">
                 <div className="flex items-start gap-2">
-                  <span className="w-5 h-5 rounded-full bg-indigo-600/20 text-indigo-400 flex items-center justify-center font-bold text-[11px] flex-shrink-0">1</span>
-                  <p className="text-slate-300">
+                  <span className="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center font-bold text-[11px] flex-shrink-0">1</span>
+                  <p className="text-neutral-700">
                     Tap the <strong>Share button (⬆️)</strong> at the bottom of your Safari screen.
                   </p>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="w-5 h-5 rounded-full bg-indigo-600/20 text-indigo-400 flex items-center justify-center font-bold text-[11px] flex-shrink-0">2</span>
-                  <p className="text-slate-300">
+                  <span className="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center font-bold text-[11px] flex-shrink-0">2</span>
+                  <p className="text-neutral-700">
                     Scroll down and tap <strong>"Add to Home Screen" (➕)</strong> ➔ Tap <strong>Add</strong>.
                   </p>
                 </div>
               </div>
 
-              <div className="text-[10px] text-emerald-400 bg-emerald-950/30 border border-emerald-800/40 rounded-lg p-2 flex items-center gap-1.5">
-                <CheckCircle2 size={13} className="flex-shrink-0" />
-                <span>Mr. DODO icon will appear on your iPhone screen and run full-screen like an App Store app!</span>
+              <div className="text-[10px] text-black bg-neutral-100 border border-neutral-300 rounded-lg p-2.5 flex items-center gap-1.5 font-bold">
+                <CheckCircle2 size={14} className="flex-shrink-0" />
+                <span>Mr. DODO icon will appear on your iPhone screen and run full-screen!</span>
               </div>
             </div>
           ) : (
-            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-md space-y-3">
+            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-4 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-blue-600/15 border border-blue-500/20 text-blue-400 flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-xl bg-black text-white flex items-center justify-center shadow-sm">
                     <Download size={18} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-white flex items-center gap-1.5">
+                    <h4 className="font-black text-sm text-black flex items-center gap-1.5">
                       Android APK File
-                      <span className="text-[10px] bg-slate-800 text-slate-300 px-1.5 py-0.2 rounded font-mono">
+                      <span className="text-[10px] bg-neutral-200 text-neutral-800 px-1.5 py-0.2 rounded font-mono font-bold">
                         1.1 MB
                       </span>
                     </h4>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-[11px] text-neutral-500 font-medium">
                       Standalone installer file for Android phones
                     </p>
                   </div>
                 </div>
-                <span className="text-[10px] bg-blue-950/60 text-blue-400 border border-blue-800/60 px-2 py-0.5 rounded-md font-bold uppercase">
+                <span className="text-[10px] bg-neutral-100 text-black border border-neutral-300 px-2 py-0.5 rounded-md font-bold uppercase">
                   Official
                 </span>
               </div>
@@ -162,41 +162,41 @@ export default function AddToMobileModal({
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={handleDownloadAPK}
-                  className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl text-center shadow-md shadow-blue-950/50 transition active:scale-95 flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2.5 bg-black hover:bg-neutral-800 text-white text-xs font-bold rounded-xl text-center shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5"
                 >
                   <Download size={15} />
                   <span>Download MrDodo-CarWash.apk</span>
                 </a>
                 <button
                   onClick={handleShareToWhatsApp}
-                  className="p-2.5 bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 hover:border-slate-700 rounded-xl transition shadow"
+                  className="p-2.5 bg-neutral-100 hover:bg-neutral-200 text-black border border-neutral-300 rounded-xl transition shadow-sm"
                   title="Send link to phone via WhatsApp"
                 >
                   <Share2 size={16} />
                 </button>
               </div>
 
-              <div className="text-[10px] text-slate-300 bg-slate-900 border border-slate-800 rounded-lg p-2 flex items-center gap-1.5">
-                <CheckCircle2 size={13} className="text-blue-400 flex-shrink-0" />
+              <div className="text-[10px] text-neutral-600 bg-white border border-neutral-200 rounded-lg p-2.5 flex items-center gap-1.5 font-medium">
+                <CheckCircle2 size={14} className="text-black flex-shrink-0" />
                 <span>Tap downloaded file on your phone ➔ Tap <strong>Install</strong>. Runs offline seamlessly!</span>
               </div>
             </div>
           )}
 
-          {/* 🌟 2. LIVE CLOUD HTTPS ACCESS (Fixes "Site can't be reached") */}
-          <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 text-center space-y-3.5">
+          {/* 🌟 2. LIVE CLOUD HTTPS ACCESS */}
+          <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-4 text-center space-y-3.5">
             <div className="space-y-1">
-              <span className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center justify-center gap-1.5">
-                <Globe size={14} className="text-blue-400" />
+              <span className="text-xs font-black text-black uppercase tracking-wider flex items-center justify-center gap-1.5">
+                <Globe size={14} />
                 Live Cloud Access (Any Phone / Any Network)
               </span>
-              <p className="text-[11px] text-slate-400">
-                Works on cellular data (4G/5G) or Wi-Fi. No firewall block.
+              <p className="text-[11px] text-neutral-500 font-medium">
+                Works on cellular data (4G/5G) or Wi-Fi. 24/7 Always online.
               </p>
             </div>
 
             {/* QR Code Box */}
-            <div className="w-48 h-48 mx-auto bg-white p-2.5 rounded-2xl shadow-xl flex items-center justify-center">
+            <div className="w-48 h-48 mx-auto bg-white p-2.5 rounded-2xl shadow-sm border border-neutral-300 flex items-center justify-center">
               {qrDataUrl ? (
                 <img
                   src={qrDataUrl}
@@ -204,24 +204,24 @@ export default function AddToMobileModal({
                   className="w-full h-full object-contain"
                 />
               ) : (
-                <div className="animate-pulse text-xs text-slate-500">Generating QR...</div>
+                <div className="animate-pulse text-xs text-neutral-400 font-medium">Generating QR...</div>
               )}
             </div>
 
             {/* Live Cloud URL */}
             <div className="space-y-2">
-              <div className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 flex items-center justify-between gap-2">
-                <span className="text-xs font-mono text-emerald-400 truncate">
+              <div className="bg-white border border-neutral-300 rounded-xl px-3 py-2 flex items-center justify-between gap-2">
+                <span className="text-xs font-mono font-bold text-black truncate">
                   {mobileUrl}
                 </span>
                 <button
                   onClick={() => handleCopyLink(mobileUrl)}
-                  className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg flex items-center gap-1 transition flex-shrink-0"
+                  className="px-2.5 py-1 bg-neutral-100 hover:bg-neutral-200 text-black text-xs font-bold rounded-lg border border-neutral-300 flex items-center gap-1 transition flex-shrink-0"
                 >
                   {copied ? (
                     <>
-                      <Check size={12} className="text-emerald-400" />
-                      <span className="text-emerald-400">Copied</span>
+                      <Check size={12} />
+                      <span>Copied</span>
                     </>
                   ) : (
                     <>
@@ -235,7 +235,7 @@ export default function AddToMobileModal({
               {/* Share via WhatsApp */}
               <button
                 onClick={handleShareToWhatsApp}
-                className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 transition active:scale-95"
+                className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow-sm flex items-center justify-center gap-2 transition active:scale-95"
               >
                 <Share2 size={14} />
                 <span>Send to My Phone via WhatsApp</span>
@@ -246,16 +246,16 @@ export default function AddToMobileModal({
           {/* 🌟 3. STEP-BY-STEP INSTRUCTIONS TABS */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+              <span className="text-xs font-bold text-neutral-700 uppercase tracking-wider">
                 Installation Guides
               </span>
-              <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800 text-[11px] font-semibold">
+              <div className="flex bg-neutral-100 p-1 rounded-xl border border-neutral-300 text-[11px] font-bold">
                 <button
                   onClick={() => setSelectedPlatform('apk')}
                   className={`px-2.5 py-1 rounded-lg transition ${
                     selectedPlatform === 'apk'
-                      ? 'bg-emerald-600 text-white shadow'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-black text-white shadow-sm'
+                      : 'text-neutral-600 hover:text-black'
                   }`}
                 >
                   APK Install
@@ -264,8 +264,8 @@ export default function AddToMobileModal({
                   onClick={() => setSelectedPlatform('cloud')}
                   className={`px-2.5 py-1 rounded-lg transition ${
                     selectedPlatform === 'cloud'
-                      ? 'bg-blue-600 text-white shadow'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-black text-white shadow-sm'
+                      : 'text-neutral-600 hover:text-black'
                   }`}
                 >
                   Android Chrome
@@ -274,8 +274,8 @@ export default function AddToMobileModal({
                   onClick={() => setSelectedPlatform('ios')}
                   className={`px-2.5 py-1 rounded-lg transition ${
                     selectedPlatform === 'ios'
-                      ? 'bg-indigo-600 text-white shadow'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-black text-white shadow-sm'
+                      : 'text-neutral-600 hover:text-black'
                   }`}
                 >
                   iPhone (iOS)
@@ -285,38 +285,38 @@ export default function AddToMobileModal({
 
             {/* APK Guide */}
             {selectedPlatform === 'apk' && (
-              <div className="bg-slate-950/70 border border-slate-800/80 rounded-2xl p-4 space-y-2.5 text-xs">
+              <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-4 space-y-2.5 text-xs text-neutral-800">
                 <div className="flex items-start gap-2.5">
-                  <div className="w-5 h-5 rounded-full bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-bold flex-shrink-0 text-xs">
+                  <div className="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center font-bold flex-shrink-0 text-xs">
                     1
                   </div>
                   <div>
-                    <p className="font-semibold text-white">Download the APK file</p>
-                    <p className="text-slate-400 text-[11px]">
+                    <p className="font-bold text-black">Download the APK file</p>
+                    <p className="text-neutral-500 text-[11px] font-medium">
                       Click <strong>Download MrDodo-CarWash.apk</strong> or send the link to your phone via WhatsApp.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2.5">
-                  <div className="w-5 h-5 rounded-full bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-bold flex-shrink-0 text-xs">
+                  <div className="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center font-bold flex-shrink-0 text-xs">
                     2
                   </div>
                   <div>
-                    <p className="font-semibold text-white">Open the downloaded file</p>
-                    <p className="text-slate-400 text-[11px]">
+                    <p className="font-bold text-black">Open the downloaded file</p>
+                    <p className="text-neutral-500 text-[11px] font-medium">
                       Tap on <code>MrDodo-CarWash.apk</code> in your phone notifications or Downloads folder.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2.5">
-                  <div className="w-5 h-5 rounded-full bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-bold flex-shrink-0 text-xs">
+                  <div className="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center font-bold flex-shrink-0 text-xs">
                     3
                   </div>
                   <div>
-                    <p className="font-semibold text-white">Tap "Install"</p>
-                    <p className="text-slate-400 text-[11px]">
+                    <p className="font-bold text-black">Tap "Install"</p>
+                    <p className="text-neutral-500 text-[11px] font-medium">
                       If Android asks to <em>"Allow installation from this source"</em>, toggle it to ON. The app will install cleanly!
                     </p>
                   </div>
@@ -326,26 +326,26 @@ export default function AddToMobileModal({
 
             {/* Android Chrome PWA Guide */}
             {selectedPlatform === 'cloud' && (
-              <div className="bg-slate-950/70 border border-slate-800/80 rounded-2xl p-4 space-y-2.5 text-xs">
+              <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-4 space-y-2.5 text-xs text-neutral-800">
                 <div className="flex items-start gap-2.5">
-                  <div className="w-5 h-5 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold flex-shrink-0 text-xs">
+                  <div className="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center font-bold flex-shrink-0 text-xs">
                     1
                   </div>
                   <div>
-                    <p className="font-semibold text-white">Scan QR or Open Cloud Link</p>
-                    <p className="text-slate-400 text-[11px]">
+                    <p className="font-bold text-black">Scan QR or Open Cloud Link</p>
+                    <p className="text-neutral-500 text-[11px] font-medium">
                       Open <code>{permanentWebUrl}</code> in Chrome on your phone.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2.5">
-                  <div className="w-5 h-5 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold flex-shrink-0 text-xs">
+                  <div className="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center font-bold flex-shrink-0 text-xs">
                     2
                   </div>
                   <div>
-                    <p className="font-semibold text-white">Tap Chrome Menu (⋮) ➔ "Install app"</p>
-                    <p className="text-slate-400 text-[11px]">
+                    <p className="font-bold text-black">Tap Chrome Menu (⋮) ➔ "Install app"</p>
+                    <p className="text-neutral-500 text-[11px] font-medium">
                       Chrome will automatically generate and install the official WebAPK onto your Android app drawer.
                     </p>
                   </div>
@@ -355,26 +355,26 @@ export default function AddToMobileModal({
 
             {/* iOS Guide */}
             {selectedPlatform === 'ios' && (
-              <div className="bg-slate-950/70 border border-slate-800/80 rounded-2xl p-4 space-y-2.5 text-xs">
+              <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-4 space-y-2.5 text-xs text-neutral-800">
                 <div className="flex items-start gap-2.5">
-                  <div className="w-5 h-5 rounded-full bg-indigo-600/20 text-indigo-400 flex items-center justify-center font-bold flex-shrink-0 text-xs">
+                  <div className="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center font-bold flex-shrink-0 text-xs">
                     1
                   </div>
                   <div>
-                    <p className="font-semibold text-white">Open in Apple Safari</p>
-                    <p className="text-slate-400 text-[11px]">
+                    <p className="font-bold text-black">Open in Apple Safari</p>
+                    <p className="text-neutral-500 text-[11px] font-medium">
                       Open the Cloud link in Safari on your iPhone.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2.5">
-                  <div className="w-5 h-5 rounded-full bg-indigo-600/20 text-indigo-400 flex items-center justify-center font-bold flex-shrink-0 text-xs">
+                  <div className="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center font-bold flex-shrink-0 text-xs">
                     2
                   </div>
                   <div>
-                    <p className="font-semibold text-white">Tap Share icon (⬆️) ➔ "Add to Home Screen"</p>
-                    <p className="text-slate-400 text-[11px]">
+                    <p className="font-bold text-black">Tap Share icon (⬆️) ➔ "Add to Home Screen"</p>
+                    <p className="text-neutral-500 text-[11px] font-medium">
                       Tap <strong>Add</strong> at top right. Mr. DODO icon will appear on your iPhone screen!
                     </p>
                   </div>
@@ -386,13 +386,13 @@ export default function AddToMobileModal({
         </div>
 
         {/* 4. MODAL FOOTER */}
-        <div className="p-4 border-t border-slate-800 bg-slate-900/95 flex items-center justify-between">
-          <span className="text-[11px] text-slate-500">
-            Mr. DODO Detailing APK v1.0
+        <div className="p-4 border-t border-neutral-200 bg-neutral-50 flex items-center justify-between">
+          <span className="text-[11px] text-neutral-500 font-mono font-medium">
+            Mr. DODO Detailing v1.0
           </span>
           <button
             onClick={onClose}
-            className="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold rounded-xl transition"
+            className="px-5 py-2.5 bg-black hover:bg-neutral-800 text-white text-xs font-bold rounded-xl shadow-sm transition"
           >
             Done
           </button>

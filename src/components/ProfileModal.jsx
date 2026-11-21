@@ -95,31 +95,31 @@ export default function ProfileModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
-      <div className="bg-slate-900 border border-slate-800 text-slate-100 rounded-3xl max-w-md w-full shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+      <div className="bg-white border border-neutral-300 text-black rounded-2xl max-w-md w-full shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
+        <div className="p-4 sm:p-5 border-b border-neutral-200 flex items-center justify-between bg-neutral-50">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-blue-600/15 border border-blue-500/20 text-blue-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-black text-white flex items-center justify-center shadow-sm">
               <User size={16} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white">User Profile & Access</h3>
-              <p className="text-[11px] text-slate-400">Account settings and photo</p>
+              <h3 className="text-sm font-black text-black">User Profile & Access</h3>
+              <p className="text-[11px] text-neutral-500 font-medium">Account settings and photo</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="p-1.5 rounded-lg text-neutral-400 hover:text-black hover:bg-neutral-200 transition"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Body */}
-        <div className="p-5 space-y-4 max-h-[80vh] overflow-y-auto">
+        <div className="p-5 space-y-4 max-h-[80vh] overflow-y-auto bg-white">
           {successMsg && (
-            <div className="p-2.5 bg-emerald-500/15 border border-emerald-500/30 rounded-xl text-xs text-emerald-400 flex items-center gap-2">
+            <div className="p-2.5 bg-neutral-100 border border-neutral-300 rounded-xl text-xs text-black font-bold flex items-center gap-2">
               <Check size={14} />
               <span>{successMsg}</span>
             </div>
@@ -128,11 +128,11 @@ export default function ProfileModal({
           {/* Avatar Upload Center */}
           <div className="flex flex-col items-center text-center space-y-3 pt-1">
             <div className="relative group">
-              <div className="w-24 h-24 rounded-full bg-slate-950 border-2 border-slate-700 ring-4 ring-blue-600/20 shadow-xl overflow-hidden flex items-center justify-center">
+              <div className="w-24 h-24 rounded-full bg-neutral-100 border-2 border-neutral-300 ring-4 ring-neutral-200 shadow-sm overflow-hidden flex items-center justify-center">
                 {avatar ? (
                   <img src={avatar} alt={name} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-2xl font-black text-blue-400 font-mono tracking-wider">
+                  <span className="text-2xl font-black text-black font-mono tracking-wider">
                     {getInitials(name)}
                   </span>
                 )}
@@ -142,9 +142,9 @@ export default function ProfileModal({
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="absolute inset-0 rounded-full bg-slate-950/70 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white text-[11px] font-semibold transition cursor-pointer"
+                className="absolute inset-0 rounded-full bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white text-[11px] font-bold transition cursor-pointer"
               >
-                <Camera size={20} className="mb-0.5 text-blue-400" />
+                <Camera size={20} className="mb-0.5 text-white" />
                 <span>Change</span>
               </button>
             </div>
@@ -161,19 +161,19 @@ export default function ProfileModal({
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="text-xs font-semibold text-blue-400 hover:text-blue-300 underline underline-offset-4 flex items-center gap-1.5 mx-auto"
+                className="text-xs font-bold text-black hover:underline underline-offset-4 flex items-center gap-1.5 mx-auto"
               >
                 <UploadCloud size={13} />
                 <span>Upload Profile Picture</span>
               </button>
-              <p className="text-[10px] text-slate-500 mt-0.5">JPG or PNG (Auto-compressed for fast sync)</p>
+              <p className="text-[10px] text-neutral-500 font-medium mt-0.5">JPG or PNG (Auto-compressed for fast sync)</p>
             </div>
           </div>
 
           {/* Form Fields */}
           <div className="space-y-3 pt-2">
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-neutral-700 mb-1">
                 Display Name
               </label>
               <input
@@ -181,32 +181,26 @@ export default function ProfileModal({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 disabled={isGuest}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 disabled:opacity-60"
+                className="w-full bg-neutral-100 border border-neutral-300 rounded-xl px-3 py-2 text-xs text-black placeholder-neutral-400 focus:outline-none focus:border-black font-medium disabled:opacity-60"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-neutral-700 mb-1">
                 Account Role & Privileges
               </label>
-              <div className="flex items-center justify-between bg-slate-950 border border-slate-800 rounded-xl px-3 py-2">
-                <span className="text-xs text-slate-300 font-medium">
+              <div className="flex items-center justify-between bg-neutral-100 border border-neutral-300 rounded-xl px-3 py-2">
+                <span className="text-xs text-black font-bold">
                   {currentUser.role || 'Member'}
                 </span>
-                <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full font-mono ${
-                  currentUser.isOwner
-                    ? 'bg-blue-950 text-blue-400 border border-blue-800'
-                    : isGuest
-                    ? 'bg-amber-950 text-amber-400 border border-amber-800'
-                    : 'bg-emerald-950 text-emerald-400 border border-emerald-800'
-                }`}>
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md font-mono bg-black text-white">
                   {currentUser.isOwner ? 'Owner' : isGuest ? 'View Only' : 'Staff'}
                 </span>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-neutral-700 mb-1">
                 Phone Number
               </label>
               <input
@@ -215,21 +209,17 @@ export default function ProfileModal({
                 onChange={(e) => setPhone(e.target.value)}
                 disabled={isGuest}
                 placeholder="e.g. 9947885856"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 disabled:opacity-60 font-mono"
+                className="w-full bg-neutral-100 border border-neutral-300 rounded-xl px-3 py-2 text-xs text-black placeholder-neutral-400 focus:outline-none focus:border-black disabled:opacity-60 font-mono font-bold"
               />
             </div>
 
             {/* Access Level Card */}
-            <div className={`p-3 rounded-xl border text-xs space-y-1 ${
-              isGuest
-                ? 'bg-amber-950/20 border-amber-800/40 text-amber-300'
-                : 'bg-blue-950/20 border-blue-800/40 text-blue-300'
-            }`}>
-              <div className="flex items-center gap-1.5 font-bold">
+            <div className="p-3 rounded-xl border border-neutral-200 bg-neutral-50 text-xs space-y-1">
+              <div className="flex items-center gap-1.5 font-bold text-black">
                 {isGuest ? <Eye size={14} /> : <ShieldCheck size={14} />}
                 <span>{isGuest ? 'Guest Access Restrictions' : 'Full Manager Permissions'}</span>
               </div>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-neutral-500 font-medium">
                 {isGuest
                   ? 'You are signed in as a Guest viewer. Invoices and bay status can be inspected, but adding, editing, and deleting records is disabled.'
                   : 'Full administrative access to create invoices, advance service bay stages, track coatings warranty, and manage finances.'}
@@ -239,11 +229,11 @@ export default function ProfileModal({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-slate-800 bg-slate-900/90 flex items-center justify-between">
+        <div className="p-4 border-t border-neutral-200 bg-neutral-50 flex items-center justify-between">
           <button
             type="button"
             onClick={onLogout}
-            className="px-3 py-2 rounded-xl bg-slate-950 hover:bg-rose-950/40 text-slate-400 hover:text-rose-400 border border-slate-800 hover:border-rose-800/60 text-xs font-semibold flex items-center gap-1.5 transition"
+            className="px-3.5 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-black border border-neutral-300 text-xs font-bold flex items-center gap-1.5 transition"
           >
             <LogOut size={14} />
             <span>Sign Out</span>
@@ -254,7 +244,7 @@ export default function ProfileModal({
               type="button"
               onClick={handleSave}
               disabled={isSaving}
-              className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-md shadow-blue-950 transition active:scale-95"
+              className="px-5 py-2.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold shadow-sm transition active:scale-95"
             >
               {isSaving ? 'Saving...' : 'Save Profile'}
             </button>
