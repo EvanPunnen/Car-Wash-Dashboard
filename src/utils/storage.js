@@ -459,9 +459,9 @@ export function getMonthlyFinancialSummary(bills = [], expenses = [], targetMont
   };
 }
 
-// 2. THEME (Dark / Light)
+// 2. THEME (Dark / Light - Default: Light White & Black)
 export function getStoredTheme() {
-  return localStorage.getItem(THEME_KEY) || 'dark';
+  return localStorage.getItem(THEME_KEY) || 'light';
 }
 
 export function setStoredTheme(theme) {

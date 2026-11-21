@@ -57,7 +57,7 @@ export default function App() {
   const [theme, setTheme] = useState(getStoredTheme());
 
   // 3. Navigation tabs: 'dashboard' | 'form' | 'preview' | 'coatings' | 'customers' | 'expenses' | 'team' | 'drive' | 'history'
-  const [activeTab, setActiveTab] = useState('form');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Desktop Split Screen mode (Form on Left, Live A4 on Right)
@@ -468,8 +468,8 @@ export default function App() {
             </div>
           </div>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1 bg-slate-950/40 p-1 rounded-xl border border-slate-800/60 text-xs font-semibold">
+          {/* Desktop Navigation Links (White & Black) */}
+          <nav className="hidden lg:flex items-center gap-1 bg-neutral-100/80 p-1 rounded-xl border border-neutral-300 text-xs font-semibold">
             {[
               { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
               { id: 'form', label: 'Billing', icon: PenTool },
@@ -488,12 +488,12 @@ export default function App() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition ${
+                  className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition font-bold ${
                     isActive
-                      ? 'bg-blue-600 text-white shadow-md'
+                      ? 'bg-black text-white shadow-sm'
                       : isDark
                       ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                      : 'text-neutral-700 hover:text-black hover:bg-neutral-200/80'
                   }`}
                 >
                   <Icon size={14} />
@@ -503,28 +503,28 @@ export default function App() {
             })}
           </nav>
 
-          {/* Right Header Actions: Theme Switcher, Add to Mobile, Manager, Settings, Logout */}
+          {/* Right Header Actions: Individual User Switcher, Add to Mobile, Settings, Logout */}
           <div className="flex items-center gap-1 sm:gap-2">
-            {/* REALTIME CLOUD SYNC PILL (Visible on all screens & phones) */}
+            {/* REALTIME CLOUD SYNC PILL */}
             <div 
-              className={`flex items-center gap-1.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl text-[10px] sm:text-[11px] font-medium border transition ${
+              className={`flex items-center gap-1.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl text-[10px] sm:text-[11px] font-bold border transition ${
                 isOnline 
-                  ? 'bg-blue-950/50 border-blue-800/60 text-blue-300' 
-                  : 'bg-amber-950/50 border-amber-800/60 text-amber-300'
+                  ? 'bg-neutral-100 border-neutral-300 text-black' 
+                  : 'bg-neutral-200 border-neutral-400 text-neutral-700'
               }`}
               title={isOnline ? "Connected to Supabase Realtime Cloud (Multi-Device Auto-Sync)" : "Offline Mode: Changes saved locally on device"}
             >
-              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`}></span>
+              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${isOnline ? 'bg-black animate-pulse' : 'bg-neutral-400'}`}></span>
               <span className="font-semibold">{isOnline ? 'Cloud Sync' : 'Offline'}</span>
             </div>
 
             {/* ADD TO MOBILE BUTTON (PWA, APK & QR Scan) */}
             <button
               onClick={() => setIsMobileModalOpen(true)}
-              className="flex items-center justify-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold border border-slate-700/80 hover:border-blue-500/50 transition shadow-sm active:scale-95 flex-shrink-0"
+              className="flex items-center justify-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold border border-black transition shadow-sm active:scale-95 flex-shrink-0"
               title="Add to Mobile (APK / PWA / QR Code)"
             >
-              <Smartphone size={15} className="text-blue-400" />
+              <Smartphone size={15} />
               <span className="hidden sm:inline">Add to Mobile</span>
             </button>
 
@@ -534,7 +534,7 @@ export default function App() {
               className={`p-2 rounded-xl border transition flex-shrink-0 ${
                 isDark
                   ? 'bg-slate-800 text-amber-400 border-slate-700 hover:bg-slate-700'
-                  : 'bg-slate-100 text-slate-800 border-slate-300 hover:bg-slate-200'
+                  : 'bg-neutral-100 text-neutral-800 border-neutral-300 hover:bg-neutral-200'
               }`}
               title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
             >
@@ -544,12 +544,12 @@ export default function App() {
             {/* Split Screen View Toggle (Desktop) */}
             <button
               onClick={() => setIsSplitView(v => !v)}
-              className={`hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-semibold transition ${
+              className={`hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition ${
                 isSplitView
-                  ? 'bg-blue-600/20 text-blue-400 border-blue-500/50'
+                  ? 'bg-black text-white border-black'
                   : isDark
                   ? 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white'
-                  : 'bg-white text-slate-600 border-slate-300 hover:text-slate-900'
+                  : 'bg-white text-neutral-700 border-neutral-300 hover:text-black'
               }`}
               title="Toggle Side-by-Side Split View"
             >
@@ -557,30 +557,45 @@ export default function App() {
               <span>Split</span>
             </button>
 
-            {/* USER PROFILE AVATAR (Click to edit photo & details) */}
+            {/* INDIVIDUAL USER PROFILE & SWITCH ACCOUNT BUTTON */}
             <button
               onClick={() => setIsProfileOpen(true)}
-              className="flex items-center gap-2 p-1 sm:px-2.5 sm:py-1 rounded-2xl bg-slate-950 border border-slate-800 hover:border-slate-700 transition group"
+              className={`flex items-center gap-2 p-1 sm:px-2.5 sm:py-1 rounded-2xl border transition group ${
+                isDark
+                  ? 'bg-slate-950 border-slate-800 hover:border-slate-700'
+                  : 'bg-neutral-100 border-neutral-300 hover:border-black'
+              }`}
               title="Click to view & edit Profile / Photo"
             >
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-900 border border-slate-700 ring-2 ring-blue-500/20 overflow-hidden flex items-center justify-center flex-shrink-0">
+              <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full border ring-2 ring-neutral-300 overflow-hidden flex items-center justify-center flex-shrink-0 ${
+                isDark ? 'bg-slate-900 border-slate-700' : 'bg-black text-white border-black'
+              }`}>
                 {authUser?.avatar ? (
                   <img src={authUser.avatar} alt={authUser.name} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-[11px] font-bold text-blue-400 font-mono">
+                  <span className="text-[11px] font-black font-mono">
                     {(authUser?.name || authUser?.username || 'U').charAt(0).toUpperCase()}
                   </span>
                 )}
               </div>
               <div className="text-left hidden sm:block">
-                <p className="text-xs font-bold text-white group-hover:text-blue-400 transition leading-tight truncate max-w-[105px]">
+                <p className={`text-xs font-black transition leading-tight truncate max-w-[105px] ${
+                  isDark ? 'text-white group-hover:text-blue-400' : 'text-black group-hover:underline'
+                }`}>
                   {authUser?.name?.split(' ')[0] || authUser?.username || 'User'}
                 </p>
-                <span className={`text-[9px] font-mono px-1 rounded uppercase font-bold ${
-                  authUser?.isOwner ? 'text-blue-400' : authUser?.isGuest ? 'text-amber-400' : 'text-emerald-400'
-                }`}>
-                  {authUser?.isOwner ? 'Owner' : authUser?.isGuest ? 'View Only' : 'Staff'}
-                </span>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <span className={`text-[9px] font-mono px-1 rounded uppercase font-bold ${
+                    isDark
+                      ? authUser?.isOwner ? 'text-blue-400' : authUser?.isGuest ? 'text-amber-400' : 'text-emerald-400'
+                      : authUser?.isOwner ? 'bg-black text-white' : authUser?.isGuest ? 'bg-amber-200 text-amber-900' : 'bg-neutral-200 text-black'
+                  }`}>
+                    {authUser?.isOwner ? 'Owner' : authUser?.isGuest ? 'View' : 'Staff'}
+                  </span>
+                  <span className="text-[9px] text-neutral-500 font-bold hover:text-black">
+                    ▾
+                  </span>
+                </div>
               </div>
             </button>
 
@@ -588,18 +603,22 @@ export default function App() {
             <button
               onClick={() => setIsSettingsOpen(true)}
               className={`p-2 rounded-xl border transition ${
-                isDark ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-slate-100 text-slate-700 border-slate-300'
+                isDark ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-neutral-100 text-neutral-800 border-neutral-300 hover:bg-neutral-200'
               }`}
               title="Shop Settings"
             >
               <SettingsIcon size={17} />
             </button>
 
-            {/* Sign Out */}
+            {/* Switch User / Sign Out */}
             <button
               onClick={handleLogout}
-              className="p-2 rounded-xl text-slate-400 hover:text-rose-400 transition"
-              title="Sign Out"
+              className={`p-2 rounded-xl border transition ${
+                isDark
+                  ? 'text-slate-400 hover:text-rose-400 border-transparent'
+                  : 'bg-neutral-100 text-black border-neutral-300 hover:bg-black hover:text-white'
+              }`}
+              title="Switch User / Sign Out"
             >
               <LogOut size={17} />
             </button>
@@ -979,15 +998,17 @@ export default function App() {
         )}
       </main>
 
-      {/* 4. MOBILE BOTTOM NAVIGATION DOCK */}
+      {/* 4. MOBILE BOTTOM NAVIGATION DOCK (White & Black) */}
       <nav className={`lg:hidden fixed bottom-0 left-0 right-0 z-40 ${
-        isDark ? 'bg-slate-900/95 border-slate-800' : 'bg-white/95 border-slate-200'
-      } backdrop-blur-lg border-t px-2 py-1 safe-pb transition-colors`}>
+        isDark ? 'bg-slate-900/95 border-slate-800' : 'bg-white/95 border-neutral-300'
+      } backdrop-blur-lg border-t px-2 py-1 safe-pb transition-colors shadow-lg`}>
         <div className="flex items-center justify-around text-center">
           <button
             onClick={() => setActiveTab('dashboard')}
             className={`flex flex-col items-center py-1 px-1 transition ${
-              activeTab === 'dashboard' ? 'text-blue-500 font-bold' : 'text-slate-400'
+              activeTab === 'dashboard'
+                ? isDark ? 'text-blue-400 font-bold' : 'text-black font-extrabold'
+                : 'text-neutral-500 hover:text-black'
             }`}
           >
             <BarChart3 size={17} />
@@ -997,7 +1018,9 @@ export default function App() {
           <button
             onClick={() => setActiveTab('form')}
             className={`flex flex-col items-center py-1 px-1 transition ${
-              activeTab === 'form' ? 'text-blue-500 font-bold' : 'text-slate-400'
+              activeTab === 'form'
+                ? isDark ? 'text-blue-400 font-bold' : 'text-black font-extrabold'
+                : 'text-neutral-500 hover:text-black'
             }`}
           >
             <PenTool size={17} />
@@ -1014,10 +1037,12 @@ export default function App() {
               }
             }}
             disabled={isDownloading}
-            className={`flex flex-col items-center justify-center -mt-4 w-12 h-12 rounded-full shadow-lg border border-slate-700/80 active:scale-95 transition ${
+            className={`flex flex-col items-center justify-center -mt-4 w-12 h-12 rounded-full shadow-lg border active:scale-95 transition ${
               activeTab === 'preview'
-                ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-950/60 ring-2 ring-emerald-500/30'
-                : 'bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white shadow-blue-950/60 ring-2 ring-blue-500/30'
+                ? 'bg-black hover:bg-neutral-800 text-white ring-2 ring-neutral-300 border-black'
+                : isDark
+                ? 'bg-blue-600 hover:bg-blue-500 text-white border-slate-700/80 ring-2 ring-blue-500/30'
+                : 'bg-black hover:bg-neutral-800 text-white border-black ring-2 ring-neutral-300'
             }`}
             title={activeTab === 'preview' ? "Download PDF Invoice" : "View Live A4 Invoice"}
           >
@@ -1027,20 +1052,26 @@ export default function App() {
           <button
             onClick={() => setActiveTab('updates')}
             className={`flex flex-col items-center py-1 px-1 transition relative ${
-              activeTab === 'updates' ? 'text-blue-500 font-bold' : 'text-slate-400 hover:text-slate-200'
+              activeTab === 'updates'
+                ? isDark ? 'text-blue-400 font-bold' : 'text-black font-extrabold'
+                : 'text-neutral-500 hover:text-black'
             }`}
           >
             <Droplets size={17} />
             <span className="text-[9px] mt-0.5">Updates</span>
             {serviceJobs.length > 0 && (
-              <span className="absolute top-0 right-1 w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+              <span className={`absolute top-0 right-1 w-2 h-2 rounded-full animate-pulse ${
+                isDark ? 'bg-blue-500' : 'bg-black'
+              }`} />
             )}
           </button>
 
           <button
             onClick={() => setActiveTab('coatings')}
             className={`flex flex-col items-center py-1 px-1 transition ${
-              activeTab === 'coatings' ? 'text-blue-500 font-bold' : 'text-slate-400 hover:text-slate-200'
+              activeTab === 'coatings'
+                ? isDark ? 'text-blue-400 font-bold' : 'text-black font-extrabold'
+                : 'text-neutral-500 hover:text-black'
             }`}
           >
             <ShieldCheck size={17} />
@@ -1050,7 +1081,9 @@ export default function App() {
           <button
             onClick={() => setActiveTab('customers')}
             className={`flex flex-col items-center py-1 px-1 transition ${
-              activeTab === 'customers' ? 'text-blue-500 font-bold' : 'text-slate-400 hover:text-slate-200'
+              activeTab === 'customers'
+                ? isDark ? 'text-blue-400 font-bold' : 'text-black font-extrabold'
+                : 'text-neutral-500 hover:text-black'
             }`}
           >
             <Users size={17} />
