@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Lock, User, Eye, EyeOff, ShieldCheck, Sparkles, AlertCircle } from 'lucide-react';
+import { Lock, User, Eye, EyeOff, ShieldCheck, AlertCircle, Sparkles, UserCheck } from 'lucide-react';
 import { LOGO_ICON_WHITE_BASE64, LOGO_TEXT_WHITE_BASE64 } from '../assets/logoData';
+import { SYSTEM_USERS, loginUser } from '../utils/storage';
 
 export default function LoginPage({ onLoginSuccess }) {
   const [userId, setUserId] = useState('');
@@ -15,34 +16,29 @@ export default function LoginPage({ onLoginSuccess }) {
     setLoading(true);
 
     setTimeout(() => {
-      const cleanId = (userId || '').trim().toLowerCase();
-      const cleanPwd = (password || '').trim();
-
-      if (cleanId === 'mrdodo' && cleanPwd === 'dodo@123') {
-        onLoginSuccess({
-          userId: 'Mrdodo',
-          role: 'Administrator / Owner',
-          loginTime: new Date().toISOString()
-        });
+      const res = loginUser(userId, password);
+      if (res.success) {
+        onLoginSuccess(res.user);
       } else {
-        setError('Invalid User ID or Password. (Required: Mrdodo / dodo@123)');
+        setError(res.error || 'Invalid credentials. Please verify your User ID and Password.');
       }
       setLoading(false);
-    }, 350);
+    }, 300);
   };
 
-  const handleQuickFill = () => {
-    setUserId('Mrdodo');
-    setPassword('dodo@123');
+  const handleSelectQuickUser = (userObj) => {
+    setUserId(userObj.username);
+    setPassword(userObj.password);
     setError('');
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-slate-950 text-slate-100 selection:bg-blue-600">
-      <div className="w-full max-w-md bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl space-y-6">
+      <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl space-y-5">
+        
         {/* Brand Header */}
         <div className="text-center space-y-3">
-          <div className="w-20 h-20 mx-auto rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center p-2.5 shadow-2xl">
+          <div className="w-20 h-20 mx-auto rounded-full bg-slate-950 border-2 border-slate-800 ring-2 ring-blue-500/20 flex items-center justify-center p-3 shadow-2xl">
             <img
               src={LOGO_ICON_WHITE_BASE64}
               alt="Mr. DODO Logo"
@@ -51,13 +47,11 @@ export default function LoginPage({ onLoginSuccess }) {
           </div>
 
           <div className="space-y-1">
-            <img
-              src={LOGO_TEXT_WHITE_BASE64}
-              alt="Mr. DODO PREMIUM DETAILING & CAR WASH"
-              className="h-8 w-auto object-contain mx-auto filter drop-shadow"
-            />
+            <h2 className="text-xl font-black tracking-tight text-white uppercase">
+              Mr. DODO Detailing
+            </h2>
             <p className="text-xs text-slate-400 font-medium">
-              Management & Detailing Billing Suite
+              Management & Multi-Device Billing Suite
             </p>
           </div>
         </div>
@@ -71,42 +65,42 @@ export default function LoginPage({ onLoginSuccess }) {
         )}
 
         {/* Login Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3.5">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-              Manager / Owner User ID
+            <label className="block text-xs font-semibold text-slate-300 mb-1">
+              User ID / Account Name
             </label>
             <div className="relative">
               <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
               <input
                 type="text"
-                placeholder="Enter User ID (e.g. Mrdodo)"
+                placeholder="e.g. Christo Riju, Evan Punnen, Manager"
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700/80 rounded-xl pl-10 pr-3 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 font-medium"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-3 py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 font-medium"
                 required
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-              Secure Password
+            <label className="block text-xs font-semibold text-slate-300 mb-1">
+              Password
             </label>
             <div className="relative">
               <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
               <input
                 type={showPassword ? 'text' : 'password'}
-                placeholder="Enter Password (e.g. dodo@123)"
+                placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700/80 rounded-xl pl-10 pr-10 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 font-mono"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-10 py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 font-mono"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(p => !p)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 p-1"
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
@@ -116,35 +110,55 @@ export default function LoginPage({ onLoginSuccess }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm transition shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2 active:scale-98"
+            className="w-full py-2.5 sm:py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm transition shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2 active:scale-98"
           >
             {loading ? (
               <span>Authenticating...</span>
             ) : (
               <>
                 <ShieldCheck size={16} />
-                <span>Sign In to Dashboard</span>
+                <span>Sign In to Mr. DODO</span>
               </>
             )}
           </button>
         </form>
 
-        {/* Credentials Reminder */}
-        <div className="pt-2 border-t border-slate-800/80 text-center space-y-2">
-          <p className="text-[11px] text-slate-400">
-            Default Login:&nbsp;
-            <span className="font-mono text-blue-400 font-bold">User: Mrdodo</span>&nbsp;|&nbsp;
-            <span className="font-mono text-emerald-400 font-bold">Pswd: dodo@123</span>
+        {/* Quick-Fill Account Selector */}
+        <div className="pt-3 border-t border-slate-800 space-y-2">
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider text-center">
+            Tap Account for Instant Login:
           </p>
 
-          <button
-            type="button"
-            onClick={handleQuickFill}
-            className="text-xs text-slate-400 hover:text-white underline underline-offset-4 decoration-blue-500/50"
-          >
-            Click here to Auto-Fill Credentials
-          </button>
+          <div className="grid grid-cols-2 gap-1.5">
+            {SYSTEM_USERS.filter(u => u.id !== 'mrdodo').map(u => (
+              <button
+                key={u.id}
+                type="button"
+                onClick={() => handleSelectQuickUser(u)}
+                className={`p-2 rounded-xl border text-left transition flex items-center justify-between ${
+                  userId === u.username
+                    ? 'bg-blue-600/15 border-blue-500 text-white'
+                    : 'bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700'
+                }`}
+              >
+                <div className="truncate">
+                  <p className="text-xs font-bold text-white truncate">{u.name}</p>
+                  <p className="text-[10px] text-slate-400 truncate">{u.role}</p>
+                </div>
+                <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded font-bold uppercase ${
+                  u.isOwner
+                    ? 'bg-blue-950 text-blue-400'
+                    : u.isGuest
+                    ? 'bg-amber-950 text-amber-400'
+                    : 'bg-emerald-950 text-emerald-400'
+                }`}>
+                  {u.isGuest ? 'View' : u.isOwner ? 'Owner' : 'Staff'}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
+
       </div>
     </div>
   );

@@ -15,7 +15,8 @@ export default function ServiceUpdatesView({
   settings,
   customers = [],
   onGenerateBillFromJob,
-  onShowToast
+  onShowToast,
+  isGuest = false
 }) {
   const [filterCategory, setFilterCategory] = useState('all'); // 'all' | 'wash' | 'coating' | 'ready'
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -271,13 +272,20 @@ export default function ServiceUpdatesView({
           </div>
         </div>
 
-        <button
-          onClick={() => handleOpenIntakeModal()}
-          className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-md shadow-blue-950/50 flex items-center justify-center gap-2 active:scale-95 transition"
-        >
-          <Plus size={16} />
-          <span>Intake New Vehicle</span>
-        </button>
+        {!isGuest ? (
+          <button
+            onClick={() => handleOpenIntakeModal()}
+            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-md shadow-blue-950/50 flex items-center justify-center gap-2 active:scale-95 transition"
+          >
+            <Plus size={16} />
+            <span>Intake New Vehicle</span>
+          </button>
+        ) : (
+          <div className="px-3.5 py-2 rounded-xl bg-amber-950/40 border border-amber-800/60 text-amber-300 text-xs font-semibold flex items-center gap-1.5">
+            <Eye size={14} />
+            <span>Guest View Only</span>
+          </div>
+        )}
       </div>
 
       {/* 2. CATEGORY FILTER TABS */}

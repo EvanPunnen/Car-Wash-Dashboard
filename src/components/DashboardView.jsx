@@ -1,23 +1,33 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   TrendingUp, TrendingDown, DollarSign, Car, Sparkles,
   ShieldCheck, Sun, Droplets, Calendar, ArrowUpRight,
-  FileText, Plus, Users, Cloud, Phone, ArrowRight, Zap, CheckCircle2
+  FileText, Plus, Users, Cloud, Phone, ArrowRight, Zap, CheckCircle2,
+  Wallet, Percent, Eye
 } from 'lucide-react';
-import { formatCurrency, formatDisplayDate } from '../utils/storage';
+import { formatCurrency, formatDisplayDate, getMonthlyFinancialSummary } from '../utils/storage';
 import {
   LOGO_ICON_WHITE_BASE64,
   LOGO_TEXT_WHITE_BASE64
 } from '../assets/logoData';
 
 export default function DashboardView({
-  bills,
-  expenses,
+  bills = [],
+  expenses = [],
   customers = [],
   serviceJobs = [],
+  isGuest = false,
   onNavigateTab,
   onNewBill
 }) {
+  const now = new Date();
+  const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const [selectedMonth, setSelectedMonth] = useState(currentMonthStr);
+
+  const monthlySummary = useMemo(() => {
+    return getMonthlyFinancialSummary(bills, expenses, selectedMonth);
+  }, [bills, expenses, selectedMonth]);
+
   // 1. Calculations
   const totalSales = bills.reduce((sum, b) => {
     const sub = (b.items || []).reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
@@ -98,13 +108,20 @@ export default function DashboardView({
 
           {/* Quick Action Buttons */}
           <div className="flex flex-wrap items-center justify-center gap-2.5 mt-5">
-            <button
-              onClick={onNewBill}
-              className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-md shadow-blue-950/50 flex items-center gap-1.5 active:scale-95 transition"
-            >
-              <Plus size={15} />
-              <span>Create New Bill</span>
-            </button>
+            {!isGuest ? (
+              <button
+                onClick={onNewBill}
+                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-md shadow-blue-950/50 flex items-center gap-1.5 active:scale-95 transition"
+              >
+                <Plus size={15} />
+                <span>Create New Bill</span>
+              </button>
+            ) : (
+              <div className="px-3.5 py-1.5 rounded-xl bg-amber-950/50 border border-amber-800/60 text-amber-300 text-xs font-semibold flex items-center gap-1.5">
+                <Eye size={14} />
+                <span>Guest View Only</span>
+              </div>
+            )}
 
             <button
               onClick={() => onNavigateTab('updates')}

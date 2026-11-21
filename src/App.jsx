@@ -16,6 +16,7 @@ import SettingsModal from './components/SettingsModal';
 import ManagerModal from './components/ManagerModal';
 import GoogleDriveModal from './components/GoogleDriveModal';
 import AddToMobileModal from './components/AddToMobileModal';
+import ProfileModal from './components/ProfileModal';
 
 import LoginPage from './components/LoginPage';
 import DashboardView from './components/DashboardView';
@@ -78,6 +79,7 @@ export default function App() {
   const [isManagerModalOpen, setIsManagerModalOpen] = useState(false);
   const [isGoogleDriveOpen, setIsGoogleDriveOpen] = useState(false);
   const [isMobileModalOpen, setIsMobileModalOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [deferredInstallPrompt, setDeferredInstallPrompt] = useState(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
@@ -555,18 +557,31 @@ export default function App() {
               <span>Split</span>
             </button>
 
-            {/* Manager Switcher Button */}
+            {/* USER PROFILE AVATAR (Click to edit photo & details) */}
             <button
-              onClick={() => setIsManagerModalOpen(true)}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border transition ${
-                isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-100 border-slate-300'
-              }`}
-              title="Switch Manager Profile"
+              onClick={() => setIsProfileOpen(true)}
+              className="flex items-center gap-2 p-1 sm:px-2.5 sm:py-1 rounded-2xl bg-slate-950 border border-slate-800 hover:border-slate-700 transition group"
+              title="Click to view & edit Profile / Photo"
             >
-              <div className={`w-5 h-5 rounded-md ${activeManager?.avatarColor || 'bg-blue-600'} text-white font-bold flex items-center justify-center text-[10px]`}>
-                {(activeManager?.name || 'M').charAt(0)}
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-900 border border-slate-700 ring-2 ring-blue-500/20 overflow-hidden flex items-center justify-center flex-shrink-0">
+                {authUser?.avatar ? (
+                  <img src={authUser.avatar} alt={authUser.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-[11px] font-bold text-blue-400 font-mono">
+                    {(authUser?.name || authUser?.username || 'U').charAt(0).toUpperCase()}
+                  </span>
+                )}
               </div>
-              <span className="text-xs font-bold hidden sm:inline">{activeManager?.name?.split(' ')[0]}</span>
+              <div className="text-left hidden sm:block">
+                <p className="text-xs font-bold text-white group-hover:text-blue-400 transition leading-tight truncate max-w-[105px]">
+                  {authUser?.name?.split(' ')[0] || authUser?.username || 'User'}
+                </p>
+                <span className={`text-[9px] font-mono px-1 rounded uppercase font-bold ${
+                  authUser?.isOwner ? 'text-blue-400' : authUser?.isGuest ? 'text-amber-400' : 'text-emerald-400'
+                }`}>
+                  {authUser?.isOwner ? 'Owner' : authUser?.isGuest ? 'View Only' : 'Staff'}
+                </span>
+              </div>
             </button>
 
             {/* Settings */}
@@ -600,6 +615,14 @@ export default function App() {
         </div>
       )}
 
+      {/* GUEST VIEW-ONLY BANNER */}
+      {authUser?.isGuest && (
+        <div className="bg-amber-950/40 border-b border-amber-800/60 px-3 py-1.5 text-center text-xs text-amber-300 font-medium flex items-center justify-center gap-2 animate-fadeIn z-30">
+          <Eye size={14} className="text-amber-400" />
+          <span>Guest Mode (View Only) · Creation and editing of records is disabled.</span>
+        </div>
+      )}
+
       {/* 2. TOAST POPUP */}
       {toastMessage && (
         <div className="fixed top-14 left-1/2 -translate-x-1/2 z-50 bg-slate-900 border border-blue-500/40 text-white px-4 py-2 rounded-xl shadow-2xl text-xs font-semibold flex items-center gap-2 animate-bounce">
@@ -618,6 +641,7 @@ export default function App() {
             expenses={expenses}
             customers={customers}
             serviceJobs={serviceJobs}
+            isGuest={Boolean(authUser?.isGuest)}
             onNavigateTab={(tab) => setActiveTab(tab)}
             onNewBill={handleNewBill}
           />
@@ -632,6 +656,7 @@ export default function App() {
             }}
             settings={settings}
             customers={customers}
+            isGuest={Boolean(authUser?.isGuest)}
             onGenerateBillFromJob={handleGenerateBillFromJob}
             onShowToast={showToast}
           />
@@ -668,12 +693,16 @@ export default function App() {
         {activeTab === 'expenses' && (
           <ExpensesView
             expenses={expenses}
+            bills={bills}
+            isGuest={Boolean(authUser?.isGuest)}
             onSaveExpense={(exp) => {
+              if (authUser?.isGuest) return;
               saveExpense(exp);
               setExpenses(getExpenses());
               showToast('Expense voucher recorded');
             }}
             onDeleteExpense={(id) => {
+              if (authUser?.isGuest) return;
               deleteExpense(id);
               setExpenses(getExpenses());
               showToast('Expense deleted');
@@ -727,6 +756,7 @@ export default function App() {
                   isSaving={isSaving}
                   activeManager={activeManager}
                   onOpenManagerModal={() => setIsManagerModalOpen(true)}
+                  isGuest={Boolean(authUser?.isGuest)}
                 />
               </div>
 
@@ -801,6 +831,7 @@ export default function App() {
                 isSaving={isSaving}
                 activeManager={activeManager}
                 onOpenManagerModal={() => setIsManagerModalOpen(true)}
+                isGuest={Boolean(authUser?.isGuest)}
               />
             </div>
           )
@@ -1078,6 +1109,18 @@ export default function App() {
         onClose={() => setIsMobileModalOpen(false)}
         installPrompt={deferredInstallPrompt}
         onInstallApp={handleInstallApp}
+      />
+
+      {/* USER PROFILE & AVATAR MODAL */}
+      <ProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        currentUser={authUser}
+        onProfileUpdated={(updated) => {
+          setAuthUser(updated);
+          showToast('Profile photo & details saved');
+        }}
+        onLogout={handleLogout}
       />
 
       {/* PERMANENT HIDDEN INVOICE SOURCE FOR 100% RELIABLE INSTANT PDF GENERATION FROM ANY TAB */}

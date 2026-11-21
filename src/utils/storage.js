@@ -61,7 +61,7 @@ export async function initCloudSync(onSyncCallback) {
       supabase.from('service_jobs').select('id, data, updated_at'),
       supabase.from('customers').select('id, data, updated_at'),
       supabase.from('expenses').select('id, data, updated_at'),
-      supabase.from('shop_settings').select('id, data, updated_at').eq('id', 'default_settings').maybeSingle()
+      supabase.from('shop_settings').select('id, data, updated_at')
     ]);
 
     // Handle Invoices
@@ -116,9 +116,16 @@ export async function initCloudSync(onSyncCallback) {
       localExp.forEach(e => cloudUpsert('expenses', e.id, e));
     }
 
-    // Handle Settings
-    if (settingsRes.status === 'fulfilled' && settingsRes.value?.data?.data) {
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settingsRes.value.data.data));
+    // Handle Settings & User Profiles
+    if (settingsRes.status === 'fulfilled' && Array.isArray(settingsRes.value?.data)) {
+      const defaultSettingsRow = settingsRes.value.data.find(r => r.id === 'default_settings');
+      if (defaultSettingsRow?.data) {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(defaultSettingsRow.data));
+      }
+      const profilesRow = settingsRes.value.data.find(r => r.id === 'user_profiles');
+      if (profilesRow?.data) {
+        localStorage.setItem(PROFILES_KEY, JSON.stringify(profilesRow.data));
+      }
     } else {
       const localSettings = getShopSettings();
       cloudUpsert('shop_settings', 'default_settings', localSettings);
@@ -246,7 +253,130 @@ function handleRealtimeEvent(payload) {
   }
 }
 
-// 1. AUTHENTICATION (Credentials: user id Mrdodo, pswd dodo@123)
+export const SYSTEM_USERS = [
+  {
+    id: 'christo',
+    username: 'Christo Riju',
+    password: 'christo@mrdodo',
+    name: 'Christo Riju',
+    role: 'Owner / Director',
+    phone: '9947885856',
+    avatar: null,
+    isOwner: true,
+    isGuest: false
+  },
+  {
+    id: 'jickson',
+    username: 'Jickson John',
+    password: 'jickson@mrdodo',
+    name: 'Jickson John',
+    role: 'Owner / Director',
+    phone: '8138037450',
+    avatar: null,
+    isOwner: true,
+    isGuest: false
+  },
+  {
+    id: 'evan',
+    username: 'Evan Punnen Jacob',
+    password: 'evan@mrdodo',
+    name: 'Evan Punnen Jacob',
+    role: 'Owner / Director',
+    phone: '9495365617',
+    avatar: null,
+    isOwner: true,
+    isGuest: false
+  },
+  {
+    id: 'sani',
+    username: 'Sani',
+    password: 'sani@mrdodo',
+    name: 'Sani',
+    role: 'Owner / Executive',
+    phone: '9947885856',
+    avatar: null,
+    isOwner: true,
+    isGuest: false
+  },
+  {
+    id: 'manager',
+    username: 'Manager',
+    password: 'manager@mrdodo',
+    name: 'Mr. DODO Manager',
+    role: 'Operations Manager',
+    phone: '8138037450',
+    avatar: null,
+    isOwner: false,
+    isGuest: false
+  },
+  {
+    id: 'guest',
+    username: 'Guest',
+    password: 'guest@mrdodo',
+    name: 'Guest Viewer',
+    role: 'Guest (View Only)',
+    phone: '',
+    avatar: null,
+    isOwner: false,
+    isGuest: true
+  },
+  {
+    id: 'mrdodo',
+    username: 'Mrdodo',
+    password: 'dodo@123',
+    name: 'Mr. DODO Administrator',
+    role: 'Administrator / Owner',
+    phone: '8138037450',
+    avatar: null,
+    isOwner: true,
+    isGuest: false
+  }
+];
+
+const PROFILES_KEY = 'mr_dodo_user_profiles_v1';
+
+export function getUserProfiles() {
+  try {
+    const raw = localStorage.getItem(PROFILES_KEY);
+    const custom = raw ? JSON.parse(raw) : {};
+    return SYSTEM_USERS.map(u => ({
+      ...u,
+      ...(custom[u.id] || {})
+    }));
+  } catch {
+    return SYSTEM_USERS;
+  }
+}
+
+export function saveUserProfile(userId, updates) {
+  try {
+    const raw = localStorage.getItem(PROFILES_KEY);
+    const custom = raw ? JSON.parse(raw) : {};
+    custom[userId] = {
+      ...(custom[userId] || {}),
+      ...updates,
+      updatedAt: new Date().toISOString()
+    };
+    localStorage.setItem(PROFILES_KEY, JSON.stringify(custom));
+
+    // Update active session if it matches
+    const currentAuth = getAuthUser();
+    if (currentAuth && (currentAuth.id === userId || currentAuth.username?.toLowerCase() === userId?.toLowerCase())) {
+      const updatedAuth = { ...currentAuth, ...updates };
+      localStorage.setItem(AUTH_KEY, JSON.stringify(updatedAuth));
+    }
+
+    // Sync profiles to cloud shop_settings
+    cloudUpsert('shop_settings', 'user_profiles', custom);
+    window.dispatchEvent(new CustomEvent('mrdodo_profile_updated', { detail: { userId, updates } }));
+    return custom[userId];
+  } catch (err) {
+    console.error('Failed to save profile', err);
+    throw err;
+  }
+}
+
+// 1. AUTHENTICATION (6 Role-Based Accounts + Legacy)
 export function getAuthUser() {
   try {
     const raw = localStorage.getItem(AUTH_KEY);
@@ -258,23 +388,75 @@ export function getAuthUser() {
 }
 
 export function loginUser(userId, password) {
-  const cleanId = (userId || '').trim().toLowerCase();
+  const cleanInput = (userId || '').trim().toLowerCase().replace(/\s+/g, '');
   const cleanPwd = (password || '').trim();
 
-  if (cleanId === 'mrdodo' && cleanPwd === 'dodo@123') {
+  const allUsers = getUserProfiles();
+  const matchedUser = allUsers.find(u => {
+    const uId = (u.id || '').toLowerCase().replace(/\s+/g, '');
+    const uName = (u.name || '').toLowerCase().replace(/\s+/g, '');
+    const uUser = (u.username || '').toLowerCase().replace(/\s+/g, '');
+    return (uId === cleanInput || uName === cleanInput || uUser === cleanInput);
+  });
+
+  if (matchedUser && matchedUser.password === cleanPwd) {
     const session = {
-      userId: 'Mrdodo',
-      role: 'Administrator / Owner',
+      ...matchedUser,
+      userId: matchedUser.username,
       loginTime: new Date().toISOString()
     };
     localStorage.setItem(AUTH_KEY, JSON.stringify(session));
     return { success: true, user: session };
   }
-  return { success: false, error: 'Invalid User ID or Password. (Use Mrdodo / dodo@123)' };
+
+  return {
+    success: false,
+    error: 'Invalid User ID or Password. (Check spelling or select quick-fill)'
+  };
 }
 
 export function logoutUser() {
   localStorage.removeItem(AUTH_KEY);
+}
+
+export function getMonthlyFinancialSummary(bills = [], expenses = [], targetMonth = null) {
+  const now = new Date();
+  const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const monthKey = targetMonth === 'all' ? null : (targetMonth || currentMonthKey);
+
+  const filteredBills = monthKey
+    ? bills.filter(b => (b.date || '').startsWith(monthKey))
+    : bills;
+
+  const filteredExpenses = monthKey
+    ? expenses.filter(e => (e.date || '').startsWith(monthKey))
+    : expenses;
+
+  const totalIncome = filteredBills.reduce((sum, b) => {
+    const sub = (b.items || []).reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
+    return sum + (sub - (Number(b.discount) || 0));
+  }, 0);
+
+  const totalExpense = filteredExpenses.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+  const netProfit = totalIncome - totalExpense;
+  const profitMargin = totalIncome > 0 ? ((netProfit / totalIncome) * 100).toFixed(1) : 0;
+
+  const categoryMap = {};
+  filteredExpenses.forEach(exp => {
+    const cat = exp.category || 'Miscellaneous';
+    categoryMap[cat] = (categoryMap[cat] || 0) + (Number(exp.amount) || 0);
+  });
+
+  return {
+    monthKey,
+    billCount: filteredBills.length,
+    expenseCount: filteredExpenses.length,
+    totalIncome,
+    totalExpense,
+    netProfit,
+    profitMargin,
+    categoryMap
+  };
 }
 
 // 2. THEME (Dark / Light)

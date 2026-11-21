@@ -20,7 +20,8 @@ export default function BillForm({
   onShareWhatsApp,
   isSaving,
   activeManager,
-  onOpenManagerModal
+  onOpenManagerModal,
+  isGuest = false
 }) {
   const [isQuickModalOpen, setIsQuickModalOpen] = useState(false);
   const [selectedMaker, setSelectedMaker] = useState('All');
@@ -157,15 +158,22 @@ export default function BillForm({
 
         {/* Action Buttons Row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          <button
-            type="button"
-            onClick={onSave}
-            disabled={isSaving}
-            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition shadow-md shadow-blue-900/30 active:scale-95"
-          >
-            <Save size={15} />
-            <span>{isSaving ? 'Saving...' : 'Save Bill'}</span>
-          </button>
+          {!isGuest ? (
+            <button
+              type="button"
+              onClick={onSave}
+              disabled={isSaving}
+              className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition shadow-md shadow-blue-900/30 active:scale-95"
+            >
+              <Save size={15} />
+              <span>{isSaving ? 'Saving...' : 'Save Bill'}</span>
+            </button>
+          ) : (
+            <div className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-amber-950/40 border border-amber-800/60 text-amber-300 text-xs font-semibold">
+              <Eye size={15} />
+              <span>Guest View</span>
+            </div>
+          )}
 
           <button
             type="button"
@@ -698,20 +706,22 @@ export default function BillForm({
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={onSave}
-              disabled={isSaving}
-              className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition flex items-center gap-1.5"
-            >
-              <Save size={14} />
-              <span>{isSaving ? 'Saved' : 'Save'}</span>
-            </button>
+            {!isGuest && (
+              <button
+                type="button"
+                onClick={onSave}
+                disabled={isSaving}
+                className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition flex items-center gap-1.5"
+              >
+                <Save size={14} />
+                <span>{isSaving ? 'Saved' : 'Save'}</span>
+              </button>
+            )}
 
             <button
               type="button"
               onClick={() => {
-                onSave();
+                if (!isGuest) onSave();
                 onPreview();
               }}
               className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition shadow-lg shadow-blue-900/40 active:scale-95 flex items-center gap-2"
