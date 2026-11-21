@@ -1,16 +1,16 @@
 // Bulletproof Offline Service Worker for Mr. DODO Mobile App
 // Enables 100% full offline operation without laptop or internet
-const CACHE_NAME = 'mr-dodo-offline-v3';
+const CACHE_NAME = 'mr-dodo-offline-v4';
 
 const PRECACHE_URLS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/app-icon-512.png',
-  '/logo-icon.png',
-  '/logo-text.png',
-  '/logo-icon-white.png',
-  '/logo-text-white.png'
+  './',
+  './index.html',
+  './manifest.json',
+  './app-icon-512.png',
+  './logo-icon.png',
+  './logo-text.png',
+  './logo-icon-white.png',
+  './logo-text-white.png'
 ];
 
 // 1. INSTALL: Pre-cache core shell
