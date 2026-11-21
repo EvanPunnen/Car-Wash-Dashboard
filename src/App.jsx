@@ -505,16 +505,16 @@ export default function App() {
 
           {/* Right Header Actions: Theme Switcher, Add to Mobile, Manager, Settings, Logout */}
           <div className="flex items-center gap-1 sm:gap-2">
-            {/* REALTIME CLOUD SYNC PILL */}
+            {/* REALTIME CLOUD SYNC PILL (Visible on all screens & phones) */}
             <div 
-              className={`hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] font-medium border transition ${
+              className={`flex items-center gap-1.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl text-[10px] sm:text-[11px] font-medium border transition ${
                 isOnline 
-                  ? 'bg-blue-950/40 border-blue-800/60 text-blue-300' 
-                  : 'bg-amber-950/40 border-amber-800/60 text-amber-300'
+                  ? 'bg-blue-950/50 border-blue-800/60 text-blue-300' 
+                  : 'bg-amber-950/50 border-amber-800/60 text-amber-300'
               }`}
               title={isOnline ? "Connected to Supabase Realtime Cloud (Multi-Device Auto-Sync)" : "Offline Mode: Changes saved locally on device"}
             >
-              <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`}></span>
+              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`}></span>
               <span className="font-semibold">{isOnline ? 'Cloud Sync' : 'Offline'}</span>
             </div>
 
@@ -642,6 +642,7 @@ export default function App() {
             customers={customers}
             serviceJobs={serviceJobs}
             isGuest={Boolean(authUser?.isGuest)}
+            isOnline={isOnline}
             onNavigateTab={(tab) => setActiveTab(tab)}
             onNewBill={handleNewBill}
           />

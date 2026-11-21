@@ -17,6 +17,7 @@ export default function DashboardView({
   customers = [],
   serviceJobs = [],
   isGuest = false,
+  isOnline = true,
   onNavigateTab,
   onNewBill
 }) {
@@ -104,6 +105,16 @@ export default function DashboardView({
             <p className="text-[11px] text-slate-400 max-w-md mx-auto">
               Manarcad - Thiruvanchoor Bypass Road, Kottayam
             </p>
+            <div className="pt-1.5 flex items-center justify-center">
+              <span className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[10px] font-semibold tracking-wide border ${
+                isOnline 
+                  ? 'bg-emerald-950/40 border-emerald-800/50 text-emerald-300' 
+                  : 'bg-amber-950/40 border-amber-800/50 text-amber-300'
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`}></span>
+                {isOnline ? 'Cloud Sync Connected (Supabase Realtime)' : 'Offline Mode (Local Storage)'}
+              </span>
+            </div>
           </div>
 
           {/* Quick Action Buttons */}
