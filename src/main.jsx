@@ -6,7 +6,9 @@ import './index.css'
 // Register PWA Service Worker for Mobile installation & offline support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+    // Relative registration for GitHub Pages subpath compatibility
+    const swUrl = `${import.meta.env.BASE_URL}sw.js`;
+    navigator.serviceWorker.register(swUrl, { scope: import.meta.env.BASE_URL })
       .then((reg) => {
         console.log('Mr. DODO Offline Service Worker ready:', reg.scope);
       })
