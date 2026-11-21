@@ -15,7 +15,8 @@ export default function AddToMobileModal({
 }) {
   const [qrDataUrl, setQrDataUrl] = useState('');
   const [copied, setCopied] = useState(false);
-  const [selectedPlatform, setSelectedPlatform] = useState('apk'); // 'apk' | 'cloud' | 'ios'
+  const isIOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const [selectedPlatform, setSelectedPlatform] = useState(isIOS ? 'ios' : 'apk');
 
   // Permanent 24/7 Web App hosted on GitHub Pages (Always online, no laptop or server needed)
   const permanentWebUrl = 'https://evanpunnen.github.io/Car-Wash-Dashboard/';
@@ -94,55 +95,93 @@ export default function AddToMobileModal({
         {/* 2. BODY CONTENT */}
         <div className="p-5 space-y-5">
 
-          {/* 🌟 1. ANDROID APK DIRECT DOWNLOAD */}
-          <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-md space-y-3">
-            <div className="flex items-center justify-between">
+          {/* 🌟 1. IPHONE (iOS) SPECIAL INSTALLATION BANNER */}
+          {isIOS ? (
+            <div className="bg-slate-950 border border-indigo-500/30 rounded-2xl p-4 shadow-md space-y-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-blue-600/15 border border-blue-500/20 text-blue-400 flex items-center justify-center">
-                  <Download size={18} />
+                <div className="w-9 h-9 rounded-xl bg-indigo-600/15 border border-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm">
+                  🍎
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm text-white flex items-center gap-1.5">
-                    Android APK File
-                    <span className="text-[10px] bg-slate-800 text-slate-300 px-1.5 py-0.2 rounded font-mono">
-                      1.1 MB
-                    </span>
+                  <h4 className="font-bold text-sm text-white">
+                    iPhone (iOS) Installation
                   </h4>
                   <p className="text-[11px] text-slate-400">
-                    Standalone installer file for Android phones
+                    Apple iOS does not use APK files. Install via Safari in 2 steps:
                   </p>
                 </div>
               </div>
-              <span className="text-[10px] bg-blue-950/60 text-blue-400 border border-blue-800/60 px-2 py-0.5 rounded-md font-bold uppercase">
-                Official
-              </span>
-            </div>
 
-            <div className="flex items-center gap-2 pt-1">
-              <a
-                href={directApkUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={handleDownloadAPK}
-                className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl text-center shadow-md shadow-blue-950/50 transition active:scale-95 flex items-center justify-center gap-1.5"
-              >
-                <Download size={15} />
-                <span>Download MrDodo-CarWash.apk</span>
-              </a>
-              <button
-                onClick={handleShareToWhatsApp}
-                className="p-2.5 bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 hover:border-slate-700 rounded-xl transition shadow"
-                title="Send APK download link to your phone via WhatsApp"
-              >
-                <Share2 size={16} />
-              </button>
-            </div>
+              <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-3 space-y-2 text-xs">
+                <div className="flex items-start gap-2">
+                  <span className="w-5 h-5 rounded-full bg-indigo-600/20 text-indigo-400 flex items-center justify-center font-bold text-[11px] flex-shrink-0">1</span>
+                  <p className="text-slate-300">
+                    Tap the <strong>Share button (⬆️)</strong> at the bottom of your Safari screen.
+                  </p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="w-5 h-5 rounded-full bg-indigo-600/20 text-indigo-400 flex items-center justify-center font-bold text-[11px] flex-shrink-0">2</span>
+                  <p className="text-slate-300">
+                    Scroll down and tap <strong>"Add to Home Screen" (➕)</strong> ➔ Tap <strong>Add</strong>.
+                  </p>
+                </div>
+              </div>
 
-            <div className="text-[10px] text-slate-300 bg-slate-900 border border-slate-800 rounded-lg p-2 flex items-center gap-1.5">
-              <CheckCircle2 size={13} className="text-blue-400 flex-shrink-0" />
-              <span>Tap downloaded file on your phone ➔ Tap <strong>Install</strong>. Runs offline seamlessly!</span>
+              <div className="text-[10px] text-emerald-400 bg-emerald-950/30 border border-emerald-800/40 rounded-lg p-2 flex items-center gap-1.5">
+                <CheckCircle2 size={13} className="flex-shrink-0" />
+                <span>Mr. DODO icon will appear on your iPhone screen and run full-screen like an App Store app!</span>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-md space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-blue-600/15 border border-blue-500/20 text-blue-400 flex items-center justify-center">
+                    <Download size={18} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-white flex items-center gap-1.5">
+                      Android APK File
+                      <span className="text-[10px] bg-slate-800 text-slate-300 px-1.5 py-0.2 rounded font-mono">
+                        1.1 MB
+                      </span>
+                    </h4>
+                    <p className="text-[11px] text-slate-400">
+                      Standalone installer file for Android phones
+                    </p>
+                  </div>
+                </div>
+                <span className="text-[10px] bg-blue-950/60 text-blue-400 border border-blue-800/60 px-2 py-0.5 rounded-md font-bold uppercase">
+                  Official
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <a
+                  href={directApkUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={handleDownloadAPK}
+                  className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl text-center shadow-md shadow-blue-950/50 transition active:scale-95 flex items-center justify-center gap-1.5"
+                >
+                  <Download size={15} />
+                  <span>Download MrDodo-CarWash.apk</span>
+                </a>
+                <button
+                  onClick={handleShareToWhatsApp}
+                  className="p-2.5 bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 hover:border-slate-700 rounded-xl transition shadow"
+                  title="Send link to phone via WhatsApp"
+                >
+                  <Share2 size={16} />
+                </button>
+              </div>
+
+              <div className="text-[10px] text-slate-300 bg-slate-900 border border-slate-800 rounded-lg p-2 flex items-center gap-1.5">
+                <CheckCircle2 size={13} className="text-blue-400 flex-shrink-0" />
+                <span>Tap downloaded file on your phone ➔ Tap <strong>Install</strong>. Runs offline seamlessly!</span>
+              </div>
+            </div>
+          )}
 
           {/* 🌟 2. LIVE CLOUD HTTPS ACCESS (Fixes "Site can't be reached") */}
           <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 text-center space-y-3.5">
