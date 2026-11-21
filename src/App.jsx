@@ -34,7 +34,7 @@ import {
   getCustomers, saveCustomer, deleteCustomer,
   getExpenses, saveExpense, deleteExpense,
   getTeamMembers, saveTeamMember, deleteTeamMember,
-  getServiceJobs, saveServiceJob
+  getServiceJobs, saveServiceJob, initCloudSync
 } from './utils/storage';
 import {
   downloadInvoicePDF, printInvoice, shareInvoiceWhatsApp, shareInvoicePDF,
@@ -143,17 +143,23 @@ export default function App() {
     setStoredTheme(next);
   };
 
-  // Initialize state from storage on mount
+  // Initialize state from storage & Realtime Cloud Sync on mount
   useEffect(() => {
-    const loadedBills = getBills();
-    setBills(loadedBills);
-    setCustomers(getCustomers());
-    setExpenses(getExpenses());
-    setTeamMembers(getTeamMembers());
-    setServiceJobs(getServiceJobs());
-    setManagers(getManagers());
-    setActiveManagerUser(getActiveManager());
+    const refreshAllState = () => {
+      const loadedBills = getBills();
+      setBills(loadedBills);
+      setCustomers(getCustomers());
+      setExpenses(getExpenses());
+      setTeamMembers(getTeamMembers());
+      setServiceJobs(getServiceJobs());
+      setManagers(getManagers());
+      setActiveManagerUser(getActiveManager());
+      setSettings(getShopSettings());
+    };
 
+    refreshAllState();
+
+    const loadedBills = getBills();
     if (loadedBills.length > 0) {
       setCurrentBill(loadedBills[0]);
     }
@@ -161,6 +167,17 @@ export default function App() {
     if (window.innerWidth >= 1200) {
       setIsSplitView(true);
     }
+
+    // Connect to Supabase Cloud Auto-Sync & Realtime
+    initCloudSync(() => {
+      refreshAllState();
+    });
+
+    const handleCloudEvent = () => {
+      refreshAllState();
+    };
+    window.addEventListener('mrdodo_cloud_sync', handleCloudEvent);
+    return () => window.removeEventListener('mrdodo_cloud_sync', handleCloudEvent);
   }, []);
 
   // Compute auto-fit scale for A4 sheet
@@ -486,6 +503,19 @@ export default function App() {
 
           {/* Right Header Actions: Theme Switcher, Add to Mobile, Manager, Settings, Logout */}
           <div className="flex items-center gap-1 sm:gap-2">
+            {/* REALTIME CLOUD SYNC PILL */}
+            <div 
+              className={`hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] font-medium border transition ${
+                isOnline 
+                  ? 'bg-blue-950/40 border-blue-800/60 text-blue-300' 
+                  : 'bg-amber-950/40 border-amber-800/60 text-amber-300'
+              }`}
+              title={isOnline ? "Connected to Supabase Realtime Cloud (Multi-Device Auto-Sync)" : "Offline Mode: Changes saved locally on device"}
+            >
+              <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`}></span>
+              <span className="font-semibold">{isOnline ? 'Cloud Sync' : 'Offline'}</span>
+            </div>
+
             {/* ADD TO MOBILE BUTTON (PWA, APK & QR Scan) */}
             <button
               onClick={() => setIsMobileModalOpen(true)}

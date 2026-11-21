@@ -2,6 +2,7 @@ import {
   DEFAULT_SHOP_SETTINGS, SAMPLE_BILL, DEFAULT_TEAM_MEMBERS,
   DEFAULT_CUSTOMERS, DEFAULT_EXPENSES
 } from '../constants/defaultData';
+import { supabase } from './supabaseClient';
 
 const BILLS_KEY = 'mr_dodo_bills_v2';
 const SETTINGS_KEY = 'mr_dodo_settings_v2';
@@ -11,6 +12,239 @@ const TEAM_KEY = 'mr_dodo_team_v2';
 const SERVICE_JOBS_KEY = 'mr_dodo_service_jobs_v1';
 const AUTH_KEY = 'mr_dodo_auth_v1';
 const THEME_KEY = 'mr_dodo_theme_v1';
+
+// --- CLOUD SYNC & REALTIME ENGINE (Supabase) ---
+function cloudUpsert(table, id, data) {
+  try {
+    if (!supabase || !id) return;
+    supabase
+      .from(table)
+      .upsert({ id: String(id), data: data, updated_at: new Date().toISOString() })
+      .then(({ error }) => {
+        if (error) console.warn(`[Cloud Sync] Upsert warning for ${table}/${id}:`, error.message);
+      })
+      .catch(err => {
+        console.warn(`[Cloud Sync] Network offline for ${table}/${id}`, err.message);
+      });
+  } catch (err) {
+    console.warn(`[Cloud Sync] Offline fallback active`, err);
+  }
+}
+
+function cloudDelete(table, id) {
+  try {
+    if (!supabase || !id) return;
+    supabase
+      .from(table)
+      .delete()
+      .eq('id', String(id))
+      .then(({ error }) => {
+        if (error) console.warn(`[Cloud Sync] Delete warning for ${table}/${id}:`, error.message);
+      })
+      .catch(err => {
+        console.warn(`[Cloud Sync] Network offline delete for ${table}/${id}`, err.message);
+      });
+  } catch (err) {
+    console.warn(`[Cloud Sync] Offline fallback active`, err);
+  }
+}
+
+let isRealtimeSubscribed = false;
+
+export async function initCloudSync(onSyncCallback) {
+  if (!supabase) return;
+
+  try {
+    // 1. Initial Pull from Cloud for all tables
+    const [billsRes, jobsRes, custRes, expRes, settingsRes] = await Promise.allSettled([
+      supabase.from('invoices').select('id, data, updated_at'),
+      supabase.from('service_jobs').select('id, data, updated_at'),
+      supabase.from('customers').select('id, data, updated_at'),
+      supabase.from('expenses').select('id, data, updated_at'),
+      supabase.from('shop_settings').select('id, data, updated_at').eq('id', 'default_settings').maybeSingle()
+    ]);
+
+    // Handle Invoices
+    if (billsRes.status === 'fulfilled' && billsRes.value.data && billsRes.value.data.length > 0) {
+      const cloudBills = billsRes.value.data.map(r => r.data).filter(Boolean);
+      const localBills = getBills();
+      const mergedMap = new Map();
+      localBills.forEach(b => mergedMap.set(b.id, b));
+      cloudBills.forEach(b => mergedMap.set(b.id, b));
+      localStorage.setItem(BILLS_KEY, JSON.stringify(Array.from(mergedMap.values())));
+    } else {
+      const localBills = getBills();
+      localBills.forEach(b => cloudUpsert('invoices', b.id, b));
+    }
+
+    // Handle Service Jobs
+    if (jobsRes.status === 'fulfilled' && jobsRes.value.data && jobsRes.value.data.length > 0) {
+      const cloudJobs = jobsRes.value.data.map(r => r.data).filter(Boolean);
+      const localJobs = getServiceJobs();
+      const mergedMap = new Map();
+      localJobs.forEach(j => mergedMap.set(j.id, j));
+      cloudJobs.forEach(j => mergedMap.set(j.id, j));
+      localStorage.setItem(SERVICE_JOBS_KEY, JSON.stringify(Array.from(mergedMap.values())));
+    } else {
+      const localJobs = getServiceJobs();
+      localJobs.forEach(j => cloudUpsert('service_jobs', j.id, j));
+    }
+
+    // Handle Customers
+    if (custRes.status === 'fulfilled' && custRes.value.data && custRes.value.data.length > 0) {
+      const cloudCust = custRes.value.data.map(r => r.data).filter(Boolean);
+      const localCust = getCustomers();
+      const mergedMap = new Map();
+      localCust.forEach(c => mergedMap.set(c.id, c));
+      cloudCust.forEach(c => mergedMap.set(c.id, c));
+      localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(Array.from(mergedMap.values())));
+    } else {
+      const localCust = getCustomers();
+      localCust.forEach(c => cloudUpsert('customers', c.id, c));
+    }
+
+    // Handle Expenses
+    if (expRes.status === 'fulfilled' && expRes.value.data && expRes.value.data.length > 0) {
+      const cloudExp = expRes.value.data.map(r => r.data).filter(Boolean);
+      const localExp = getExpenses();
+      const mergedMap = new Map();
+      localExp.forEach(e => mergedMap.set(e.id, e));
+      cloudExp.forEach(e => mergedMap.set(e.id, e));
+      localStorage.setItem(EXPENSES_KEY, JSON.stringify(Array.from(mergedMap.values())));
+    } else {
+      const localExp = getExpenses();
+      localExp.forEach(e => cloudUpsert('expenses', e.id, e));
+    }
+
+    // Handle Settings
+    if (settingsRes.status === 'fulfilled' && settingsRes.value?.data?.data) {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settingsRes.value.data.data));
+    } else {
+      const localSettings = getShopSettings();
+      cloudUpsert('shop_settings', 'default_settings', localSettings);
+    }
+
+    if (typeof onSyncCallback === 'function') {
+      onSyncCallback({ status: 'synced' });
+    }
+    window.dispatchEvent(new CustomEvent('mrdodo_cloud_sync', { detail: { action: 'initial_hydrate' } }));
+  } catch (err) {
+    console.warn('[Cloud Sync] Failed initial hydration, running local', err);
+  }
+
+  // 2. Real-Time Multi-Device Channel Subscription
+  if (!isRealtimeSubscribed) {
+    isRealtimeSubscribed = true;
+
+    try {
+      supabase
+        .channel('mrdodo_live_sync')
+        .on('postgres_changes', { event: '*', schema: 'public' }, (payload) => {
+          handleRealtimeEvent(payload);
+          if (typeof onSyncCallback === 'function') {
+            onSyncCallback({ status: 'realtime_event', payload });
+          }
+          window.dispatchEvent(new CustomEvent('mrdodo_cloud_sync', { detail: payload }));
+        })
+        .subscribe((status) => {
+          console.log('[Cloud Realtime] Subscription status:', status);
+        });
+    } catch (e) {
+      console.warn('[Cloud Realtime] Could not subscribe', e);
+    }
+  }
+}
+
+function handleRealtimeEvent(payload) {
+  const { table, eventType, new: newRow, old: oldRow } = payload;
+  if (!table) return;
+
+  if (table === 'invoices') {
+    const bills = getBills();
+    if (eventType === 'INSERT' || eventType === 'UPDATE') {
+      if (newRow?.data) {
+        const idx = bills.findIndex(b => b.id === newRow.data.id);
+        let updated;
+        if (idx >= 0) {
+          updated = [...bills];
+          updated[idx] = newRow.data;
+        } else {
+          updated = [newRow.data, ...bills];
+        }
+        localStorage.setItem(BILLS_KEY, JSON.stringify(updated));
+      }
+    } else if (eventType === 'DELETE') {
+      if (oldRow?.id) {
+        const filtered = bills.filter(b => b.id !== oldRow.id);
+        localStorage.setItem(BILLS_KEY, JSON.stringify(filtered));
+      }
+    }
+  } else if (table === 'service_jobs') {
+    const jobs = getServiceJobs();
+    if (eventType === 'INSERT' || eventType === 'UPDATE') {
+      if (newRow?.data) {
+        const idx = jobs.findIndex(j => j.id === newRow.data.id);
+        let updated;
+        if (idx >= 0) {
+          updated = [...jobs];
+          updated[idx] = newRow.data;
+        } else {
+          updated = [newRow.data, ...jobs];
+        }
+        localStorage.setItem(SERVICE_JOBS_KEY, JSON.stringify(updated));
+      }
+    } else if (eventType === 'DELETE') {
+      if (oldRow?.id) {
+        const filtered = jobs.filter(j => j.id !== oldRow.id);
+        localStorage.setItem(SERVICE_JOBS_KEY, JSON.stringify(filtered));
+      }
+    }
+  } else if (table === 'customers') {
+    const custs = getCustomers();
+    if (eventType === 'INSERT' || eventType === 'UPDATE') {
+      if (newRow?.data) {
+        const idx = custs.findIndex(c => c.id === newRow.data.id);
+        let updated;
+        if (idx >= 0) {
+          updated = [...custs];
+          updated[idx] = newRow.data;
+        } else {
+          updated = [newRow.data, ...custs];
+        }
+        localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(updated));
+      }
+    } else if (eventType === 'DELETE') {
+      if (oldRow?.id) {
+        const filtered = custs.filter(c => c.id !== oldRow.id);
+        localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(filtered));
+      }
+    }
+  } else if (table === 'expenses') {
+    const exps = getExpenses();
+    if (eventType === 'INSERT' || eventType === 'UPDATE') {
+      if (newRow?.data) {
+        const idx = exps.findIndex(e => e.id === newRow.data.id);
+        let updated;
+        if (idx >= 0) {
+          updated = [...exps];
+          updated[idx] = newRow.data;
+        } else {
+          updated = [newRow.data, ...exps];
+        }
+        localStorage.setItem(EXPENSES_KEY, JSON.stringify(updated));
+      }
+    } else if (eventType === 'DELETE') {
+      if (oldRow?.id) {
+        const filtered = exps.filter(e => e.id !== oldRow.id);
+        localStorage.setItem(EXPENSES_KEY, JSON.stringify(filtered));
+      }
+    }
+  } else if (table === 'shop_settings') {
+    if (newRow?.data) {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(newRow.data));
+    }
+  }
+}
 
 // 1. AUTHENTICATION (Credentials: user id Mrdodo, pswd dodo@123)
 export function getAuthUser() {
@@ -80,33 +314,37 @@ export function saveBill(bill) {
     const existingIndex = bills.findIndex(b => b.id === bill.id);
     let updatedBills;
     const now = new Date().toISOString();
+    let savedBill;
 
     if (existingIndex >= 0) {
-      const updatedBill = {
+      savedBill = {
         ...bill,
         updatedAt: now
       };
       updatedBills = [...bills];
-      updatedBills[existingIndex] = updatedBill;
+      updatedBills[existingIndex] = savedBill;
     } else {
-      const newBill = {
+      savedBill = {
         ...bill,
         id: bill.id || `bill-${Date.now()}`,
         createdAt: bill.createdAt || now,
         updatedAt: now
       };
-      updatedBills = [newBill, ...bills];
+      updatedBills = [savedBill, ...bills];
       incrementNextInvoiceNumber();
     }
 
     localStorage.setItem(BILLS_KEY, JSON.stringify(updatedBills));
 
+    // Cloud Real-Time Auto-Sync
+    cloudUpsert('invoices', savedBill.id, savedBill);
+
     // Also auto-sync/update customer profile
-    if (bill.customerName || bill.vehicleNumber) {
-      autoSyncCustomerFromBill(bill);
+    if (savedBill.customerName || savedBill.vehicleNumber) {
+      autoSyncCustomerFromBill(savedBill);
     }
 
-    return bill;
+    return savedBill;
   } catch (err) {
     console.error('Failed to save bill', err);
     throw err;
@@ -118,6 +356,7 @@ export function deleteBill(billId) {
     const bills = getBills();
     const filtered = bills.filter(b => b.id !== billId);
     localStorage.setItem(BILLS_KEY, JSON.stringify(filtered));
+    cloudDelete('invoices', billId);
     return true;
   } catch (err) {
     console.error('Failed to delete bill', err);
@@ -202,18 +441,22 @@ export function saveCustomer(customer) {
     const list = getCustomers();
     const idx = list.findIndex(c => c.id === customer.id);
     let updated;
+    let savedCust;
     if (idx >= 0) {
+      savedCust = { ...customer, updatedAt: new Date().toISOString() };
       updated = [...list];
-      updated[idx] = { ...customer, updatedAt: new Date().toISOString() };
+      updated[idx] = savedCust;
     } else {
-      updated = [{
+      savedCust = {
         ...customer,
         id: customer.id || `cust-${Date.now()}`,
         createdAt: new Date().toISOString()
-      }, ...list];
+      };
+      updated = [savedCust, ...list];
     }
     localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(updated));
-    return customer;
+    cloudUpsert('customers', savedCust.id, savedCust);
+    return savedCust;
   } catch (err) {
     console.error(err);
     throw err;
@@ -225,6 +468,7 @@ export function deleteCustomer(custId) {
     const list = getCustomers();
     const filtered = list.filter(c => c.id !== custId);
     localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(filtered));
+    cloudDelete('customers', custId);
     return true;
   } catch {
     return false;
@@ -294,18 +538,23 @@ export function saveExpense(expense) {
     const list = getExpenses();
     const idx = list.findIndex(e => e.id === expense.id);
     let updated;
+    let savedExp;
     if (idx >= 0) {
+      savedExp = { ...expense, updatedAt: new Date().toISOString() };
       updated = [...list];
-      updated[idx] = expense;
+      updated[idx] = savedExp;
     } else {
-      updated = [{
+      savedExp = {
         ...expense,
         id: expense.id || `exp-${Date.now()}`,
-        date: expense.date || new Date().toISOString().split('T')[0]
-      }, ...list];
+        date: expense.date || new Date().toISOString().split('T')[0],
+        updatedAt: new Date().toISOString()
+      };
+      updated = [savedExp, ...list];
     }
     localStorage.setItem(EXPENSES_KEY, JSON.stringify(updated));
-    return expense;
+    cloudUpsert('expenses', savedExp.id, savedExp);
+    return savedExp;
   } catch (err) {
     console.error(err);
     throw err;
@@ -317,6 +566,7 @@ export function deleteExpense(expId) {
     const list = getExpenses();
     const filtered = list.filter(e => e.id !== expId);
     localStorage.setItem(EXPENSES_KEY, JSON.stringify(filtered));
+    cloudDelete('expenses', expId);
     return true;
   } catch {
     return false;
@@ -389,8 +639,9 @@ export function getShopSettings() {
 export function saveShopSettings(newSettings) {
   try {
     const current = getShopSettings();
-    const merged = { ...current, ...newSettings };
+    const merged = { ...current, ...newSettings, updatedAt: new Date().toISOString() };
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(merged));
+    cloudUpsert('shop_settings', 'default_settings', merged);
     return merged;
   } catch (err) {
     console.error('Failed to save settings', err);
@@ -586,13 +837,17 @@ export function saveServiceJob(job) {
   const jobs = getServiceJobs();
   const index = jobs.findIndex(j => j.id === job.id);
   let updated;
+  let savedJob;
   if (index >= 0) {
+    savedJob = { ...job, updatedAt: new Date().toISOString() };
     updated = [...jobs];
-    updated[index] = { ...job, updatedAt: new Date().toISOString() };
+    updated[index] = savedJob;
   } else {
-    updated = [{ ...job, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }, ...jobs];
+    savedJob = { ...job, id: job.id || `job-${Date.now()}`, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+    updated = [savedJob, ...jobs];
   }
   localStorage.setItem(SERVICE_JOBS_KEY, JSON.stringify(updated));
+  cloudUpsert('service_jobs', savedJob.id, savedJob);
   return updated;
 }
 
@@ -600,23 +855,29 @@ export function deleteServiceJob(jobId) {
   const jobs = getServiceJobs();
   const updated = jobs.filter(j => j.id !== jobId);
   localStorage.setItem(SERVICE_JOBS_KEY, JSON.stringify(updated));
+  cloudDelete('service_jobs', jobId);
   return updated;
 }
 
 export function updateServiceJobStage(jobId, newStageIndex, note = '') {
   const jobs = getServiceJobs();
+  let updatedJob = null;
   const updated = jobs.map(job => {
     if (job.id === jobId) {
-      return {
+      updatedJob = {
         ...job,
         currentStageIndex: newStageIndex,
         notes: note || job.notes,
         updatedAt: new Date().toISOString()
       };
+      return updatedJob;
     }
     return job;
   });
   localStorage.setItem(SERVICE_JOBS_KEY, JSON.stringify(updated));
+  if (updatedJob) {
+    cloudUpsert('service_jobs', jobId, updatedJob);
+  }
   return updated;
 }
 
