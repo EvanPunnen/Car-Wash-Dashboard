@@ -4,7 +4,7 @@
   "description": "Mobile Billing & Invoice App for Mr. DODO Premium Detailing & Car Wash",
   "start_url": "./",
   "scope": "./",
-  "id": "mr-dodo-billing-app-v2",
+  "id": "mr-dodo-billing-app-v3",
   "display": "standalone",
   "background_color": "#090d16",
   "theme_color": "#0f172a",

@@ -1,6 +1,6 @@
 // Bulletproof Offline Service Worker for Mr. DODO Mobile App
 // Enables 100% full offline operation without laptop or internet
-const CACHE_NAME = 'mr-dodo-offline-v4';
+const CACHE_NAME = 'mr-dodo-offline-v5';
 
 const PRECACHE_URLS = [
   './',
@@ -59,8 +59,8 @@ self.addEventListener('fetch', (event) => {
         })
         .catch(() => {
           // LAPTOP OFF OR NO INTERNET: Serve cached index.html immediately!
-          return caches.match('/index.html').then((cached) => {
-            return cached || caches.match('/');
+          return caches.match('./index.html').then((cached) => {
+            return cached || caches.match('./') || caches.match('index.html') || caches.match('/index.html');
           });
         })
     );
@@ -99,7 +99,7 @@ self.addEventListener('fetch', (event) => {
         .catch(() => {
           // Offline fallback for images or sub-resources if missing
           if (request.destination === 'image') {
-            return caches.match('/app-icon-512.png');
+            return caches.match('./app-icon-512.png') || caches.match('/app-icon-512.png');
           }
         });
     })
