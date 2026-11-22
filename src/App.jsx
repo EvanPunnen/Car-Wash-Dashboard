@@ -1027,28 +1027,6 @@ export default function App() {
             <span className="text-[9px] mt-0.5">Billing</span>
           </button>
 
-          {/* CENTER FAB: Dynamic Action (View A4 when in form; Download PDF when in preview) */}
-          <button
-            onClick={() => {
-              if (activeTab === 'preview') {
-                handleDownloadPDF(currentBill);
-              } else {
-                setActiveTab('preview');
-              }
-            }}
-            disabled={isDownloading}
-            className={`flex flex-col items-center justify-center -mt-4 w-12 h-12 rounded-full shadow-lg border active:scale-95 transition ${
-              activeTab === 'preview'
-                ? 'bg-black hover:bg-neutral-800 text-white ring-2 ring-neutral-300 border-black'
-                : isDark
-                ? 'bg-blue-600 hover:bg-blue-500 text-white border-slate-700/80 ring-2 ring-blue-500/30'
-                : 'bg-black hover:bg-neutral-800 text-white border-black ring-2 ring-neutral-300'
-            }`}
-            title={activeTab === 'preview' ? "Download PDF Invoice" : "View Live A4 Invoice"}
-          >
-            {activeTab === 'preview' ? <Download size={20} /> : <Eye size={20} />}
-          </button>
-
           <button
             onClick={() => setActiveTab('updates')}
             className={`flex flex-col items-center py-1 px-1 transition relative ${
