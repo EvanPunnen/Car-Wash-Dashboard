@@ -1,6 +1,6 @@
 // Bulletproof Offline Service Worker for Mr. DODO Mobile App
 // Enables 100% full offline operation without laptop or internet
-const CACHE_NAME = 'mr-dodo-offline-v5';
+const CACHE_NAME = 'mr-dodo-offline-v6';
 
 const PRECACHE_URLS = [
   './',
@@ -45,6 +45,11 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
 
   const url = new URL(request.url);
+
+  // Bypass service worker caching on localhost / dev environments
+  if (url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.port === '5173') {
+    return;
+  }
 
   // A. Navigation requests (opening or reloading the app)
   if (request.mode === 'navigate') {
