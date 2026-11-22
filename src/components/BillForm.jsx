@@ -104,11 +104,13 @@ export default function BillForm({
   const allFilteredModels = [];
   const searchTerm = (bill.vehicleMake || '').toLowerCase();
 
-  Object.entries(CAR_MAKERS).forEach(([maker, models]) => {
-    if (selectedMaker === 'All' || selectedMaker.toLowerCase() === maker.toLowerCase()) {
-      models.forEach(model => {
-        if (!searchTerm || model.toLowerCase().includes(searchTerm) || maker.toLowerCase().includes(searchTerm)) {
-          allFilteredModels.push({ model, maker });
+  CAR_MAKERS.forEach(entry => {
+    const makerName = entry.maker || '';
+    const makerModels = entry.models || [];
+    if (selectedMaker === 'All' || selectedMaker.toLowerCase() === makerName.toLowerCase()) {
+      makerModels.forEach(model => {
+        if (!searchTerm || model.toLowerCase().includes(searchTerm) || makerName.toLowerCase().includes(searchTerm)) {
+          allFilteredModels.push({ model, maker: makerName });
         }
       });
     }
