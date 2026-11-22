@@ -11,7 +11,7 @@ const EXPENSES_KEY = 'mr_dodo_expenses_v2';
 const TEAM_KEY = 'mr_dodo_team_v2';
 const SERVICE_JOBS_KEY = 'mr_dodo_service_jobs_v1';
 const AUTH_KEY = 'mr_dodo_auth_v1';
-const THEME_KEY = 'mr_dodo_theme_v1';
+const THEME_KEY = 'mr_dodo_theme_v2';
 
 // --- CLOUD SYNC & REALTIME ENGINE (Supabase) ---
 function cloudUpsert(table, id, data) {
